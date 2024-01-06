@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: gearglobe-postgres-container
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gearglobe_database
+      POSTGRES_USER: gearglobe
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - gearglobe-network
+
+networks:
+  gearglobe-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
