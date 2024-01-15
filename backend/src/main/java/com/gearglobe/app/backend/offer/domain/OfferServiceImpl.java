@@ -1,7 +1,9 @@
 package com.gearglobe.app.backend.offer.domain;
 
+import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
+import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +37,7 @@ class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDTO updateOffer(OfferDTO offerDTO) throws ChangeSetPersister.NotFoundException {
+    public OfferDTO updateOffer(OfferDTO offerDTO) throws EntityNotFoundException {
         return offerRepository.findById(offerDTO.getId())
                 .map(offer -> {
                     Offer newOffer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
@@ -43,17 +45,17 @@ class OfferServiceImpl implements OfferService {
                     return offerRepository.save(newOffer);
                 })
                 .map(OfferMapper.INSTANCE::offerToOfferDTO)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public OfferDTO archiveOffer(Long id) throws ChangeSetPersister.NotFoundException {
+    public OfferDTO archiveOffer(Long id) throws EntityNotFoundException {
         Optional<Offer> optionalOffer = offerRepository.findById(id);
 
         return optionalOffer.map(offer -> {
             offer.setStatus(OfferStatus.ARCHIVE);
             Offer archiveOffer = offerRepository.save(offer);
             return OfferMapper.INSTANCE.offerToOfferDTO(archiveOffer);
-        }).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        }).orElseThrow(EntityNotFoundException::new);
     }
 }

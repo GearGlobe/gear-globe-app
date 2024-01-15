@@ -1,5 +1,6 @@
 package com.gearglobe.app.backend.offer.domain;
 
+import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

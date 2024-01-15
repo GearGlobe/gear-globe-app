@@ -1,4 +1,4 @@
-package com.gearglobe.app.backend.offer.domain;
+package com.gearglobe.app.backend.offer.api.dtos;
 
 import lombok.Builder;
 import lombok.Data;
