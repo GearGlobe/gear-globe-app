@@ -18,7 +18,7 @@ class OfferMapperTest {
         offer.setDescription("Sample Description");
         offer.setPrice(99.99);
         offer.setMark("Sample Mark");
-        offer.setYear(2020L);
+        offer.setProductionYear(2020L);
         offer.setMillage(1000L);
         offer.setEngineCapacity(1.6);
         offer.setCreateDate(LocalDateTime.now());
@@ -33,7 +33,7 @@ class OfferMapperTest {
                 () -> assertEquals(offer.getDescription(), offerDTO.getDescription()),
                 () -> assertEquals(offer.getPrice(), offerDTO.getPrice()),
                 () -> assertEquals(offer.getMark(), offerDTO.getMark()),
-                () -> assertEquals(offer.getYear(), offerDTO.getYear()),
+                () -> assertEquals(offer.getProductionYear(), offerDTO.getProductionYear()),
                 () -> assertEquals(offer.getMillage(), offerDTO.getMillage()),
                 () -> assertEquals(offer.getEngineCapacity(), offerDTO.getEngineCapacity()),
                 () -> assertEquals(offer.getCreateDate(), offerDTO.getCreateDate()),
@@ -47,7 +47,7 @@ class OfferMapperTest {
                 .description("Sample Description DTO")
                 .price(88.88)
                 .mark("Sample Mark DTO")
-                .year(2021L)
+                .productionYear(2021L)
                 .millage(2000L)
                 .engineCapacity(2.0)
                 .createDate(LocalDateTime.now())
@@ -62,7 +62,7 @@ class OfferMapperTest {
                 () -> assertEquals(offerDTO.getDescription(), offer.getDescription()),
                 () -> assertEquals(offerDTO.getPrice(), offer.getPrice()),
                 () -> assertEquals(offerDTO.getMark(), offer.getMark()),
-                () -> assertEquals(offerDTO.getYear(), offer.getYear()),
+                () -> assertEquals(offerDTO.getProductionYear(), offer.getProductionYear()),
                 () -> assertEquals(offerDTO.getMillage(), offer.getMillage()),
                 () -> assertEquals(offerDTO.getEngineCapacity(), offer.getEngineCapacity()),
                 () -> assertEquals(offerDTO.getCreateDate(), offer.getCreateDate()),

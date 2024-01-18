@@ -18,29 +18,30 @@ import java.time.LocalDateTime;
 @Table(name = "offer")
 class Offer {
     @Id
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NonNull
-    String mark;
+    private String mark;
 
     @NonNull
-    Long year;
+    private Long productionYear;
 
     @NonNull
-    Long millage;
+    private Long millage;
 
     @NonNull
-    Double engineCapacity;
+    private Double engineCapacity;
 
-    String description;
-
-    @NonNull
-    Double price;
+    private String description;
 
     @NonNull
-    LocalDateTime createDate;
+    private Double price;
+
+    @NonNull
+    private LocalDateTime createDate;
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    OfferStatus status;
+    private OfferStatus status;
 }

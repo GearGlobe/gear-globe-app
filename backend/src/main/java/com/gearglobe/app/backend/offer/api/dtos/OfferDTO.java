@@ -12,7 +12,7 @@ public class OfferDTO {
 
     private String mark;
 
-    private Long year;
+    private Long productionYear;
 
     private Long millage;
 

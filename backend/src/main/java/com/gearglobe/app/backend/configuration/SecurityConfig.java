@@ -1,4 +1,4 @@
-package com.gearglobe.app.backend;
+package com.gearglobe.app.backend.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

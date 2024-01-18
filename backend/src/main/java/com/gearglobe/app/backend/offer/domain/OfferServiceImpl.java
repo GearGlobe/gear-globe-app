@@ -37,7 +37,7 @@ class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDTO updateOffer(OfferDTO offerDTO) throws EntityNotFoundException {
+    public OfferDTO updateOffer(OfferDTO offerDTO) {
         return offerRepository.findById(offerDTO.getId())
                 .map(offer -> {
                     Offer newOffer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
@@ -49,13 +49,17 @@ class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDTO archiveOffer(Long id) throws EntityNotFoundException {
+    public OfferDTO archiveOffer(Long id) {
         Optional<Offer> optionalOffer = offerRepository.findById(id);
 
         return optionalOffer.map(offer -> {
-            offer.setStatus(OfferStatus.ARCHIVE);
-            Offer archiveOffer = offerRepository.save(offer);
-            return OfferMapper.INSTANCE.offerToOfferDTO(archiveOffer);
+            if (offer.getStatus() != OfferStatus.ARCHIVE) {
+                offer.setStatus(OfferStatus.ARCHIVE);
+                Offer archiveOffer = offerRepository.save(offer);
+                return OfferMapper.INSTANCE.offerToOfferDTO(archiveOffer);
+            }
+
+            return OfferMapper.INSTANCE.offerToOfferDTO(offer);
         }).orElseThrow(EntityNotFoundException::new);
     }
 }

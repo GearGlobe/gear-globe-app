@@ -2,7 +2,6 @@ package com.gearglobe.app.backend.offer.api;
 
 import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import com.gearglobe.app.backend.offer.domain.OfferFacade;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,27 +16,27 @@ class OfferController {
     public final OfferFacade offerFacade;
 
     @GetMapping
-    public List<OfferDTO> getAllOffers(){
+    public List<OfferDTO> getAllOffers() {
         return offerFacade.getAllOffers();
     }
 
     @GetMapping("/{id}")
-    public Optional<OfferDTO> getOfferById(@PathVariable Long id){
+    public Optional<OfferDTO> getOfferById(@PathVariable Long id) {
         return offerFacade.getOfferById(id);
     }
 
-    @PostMapping(consumes = "application/json" , produces = "application/json")
-    public OfferDTO createOffer(@RequestBody OfferDTO offerDTO){
+    @PostMapping
+    public OfferDTO createOffer(@RequestBody OfferDTO offerDTO) {
         return offerFacade.createOffer(offerDTO);
     }
 
-    @PutMapping(value = "/{id}", consumes = "application/json" , produces = "application/json")
-    public OfferDTO updateOffer(@RequestBody OfferDTO offerDTO) throws EntityNotFoundException {
+    @PutMapping("/{id}")
+    public OfferDTO updateOffer(@RequestBody OfferDTO offerDTO) {
         return offerFacade.updateOffer(offerDTO);
     }
 
     @DeleteMapping("/{id}")
-    public OfferDTO archiveOffer(@PathVariable Long id) throws EntityNotFoundException {
+    public OfferDTO archiveOffer(@PathVariable Long id) {
         return offerFacade.archiveOffer(id);
     }
 }
