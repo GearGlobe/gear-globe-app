@@ -1,4 +1,3 @@
-
 INSERT INTO offer
     (mark, production_year, millage, engine_capacity, description, price, create_date, status)
 VALUES
