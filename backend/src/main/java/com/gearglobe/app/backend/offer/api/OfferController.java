@@ -4,7 +4,6 @@ import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import com.gearglobe.app.backend.offer.domain.OfferFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
 @RequestMapping(OfferController.OFFER_URL)
 @RequiredArgsConstructor
 class OfferController {
-    public static final String OFFER_URL = "/api/offer";
+    public static final String OFFER_URL = "/api/offers";
     public final OfferFacade offerFacade;
 
     @GetMapping

@@ -2,7 +2,6 @@ package com.gearglobe.app.backend.offer.api.dtos;
 
 import lombok.Builder;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data
