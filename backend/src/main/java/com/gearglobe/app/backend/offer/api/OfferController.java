@@ -2,6 +2,7 @@ package com.gearglobe.app.backend.offer.api;
 
 import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import com.gearglobe.app.backend.offer.domain.OfferFacade;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -25,12 +26,12 @@ class OfferController {
     }
 
     @PostMapping
-    public OfferDTO createOffer(@RequestBody OfferDTO offerDTO) {
+    public OfferDTO createOffer(@Valid @RequestBody OfferDTO offerDTO) {
         return offerFacade.createOffer(offerDTO);
     }
 
     @PutMapping("/{id}")
-    public OfferDTO updateOffer(@RequestBody OfferDTO offerDTO) {
+    public OfferDTO updateOffer(@Valid @RequestBody OfferDTO offerDTO) {
         return offerFacade.updateOffer(offerDTO);
     }
 
