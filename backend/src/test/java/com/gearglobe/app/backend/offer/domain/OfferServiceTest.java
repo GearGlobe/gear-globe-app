@@ -56,8 +56,8 @@ class OfferServiceTest {
     @Test
     void getOfferById_ExistingId_ShouldReturnOfferDTO() {
         // GIVEN
-        Long existingId = 1L;
-        Offer expectedOffer = prepareOffers().getFirst();
+        final Long existingId = 1L;
+        final Offer expectedOffer = prepareOffers().getFirst();
 
 
         // WHEN
@@ -84,7 +84,7 @@ class OfferServiceTest {
     @Test
     void getOfferById_NonExistingId_ShouldThrowEntityNotFoundException() {
         // GIVEN
-        Long nonExistingId = 999L;
+        final Long nonExistingId = 999L;
 
         // WHEN
         when(offerRepository.findById(nonExistingId)).thenReturn(Optional.empty());
@@ -96,19 +96,8 @@ class OfferServiceTest {
     @Test
     void createOffer_ShouldReturnOfferDTO() {
         // GIVEN
-        OfferDTO offerDTO = OfferDTO.builder()
-                .productionYear(2013L)
-                .mark("Mark4")
-                .millage(100003L)
-                .engineCapacity(2.3)
-                .description("Description4")
-                .price(10003.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
-                .build();
-
-        Offer expectedOffer = new Offer(4L, "Mark4", 2013L, 100003L, 2.3, "Description4", 10003.0, LocalDateTime.now(), OfferStatus.ACTIVE);
-
+        final OfferDTO offerDTO = prepareOfferDTOToCreate();
+        final Offer expectedOffer = prepareOffers().getFirst();
 
         // WHEN
         when(offerRepository.save(any(Offer.class))).thenReturn(expectedOffer);
@@ -132,19 +121,9 @@ class OfferServiceTest {
     @Test
     void updateOffer_ShouldReturnUpdatedOfferDTO() {
         // GIVEN
-        Long existingId = 1L;
-        Offer offer = prepareOffers().getFirst();
-        OfferDTO updatedOfferDTO = OfferDTO.builder()
-                .id(existingId)
-                .productionYear(2013L)
-                .mark("Mark4")
-                .millage(100003L)
-                .engineCapacity(2.3)
-                .description("Description4")
-                .price(10003.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
-                .build();
+        final Long existingId = 1L;
+        final Offer offer = prepareOffers().getFirst();
+        final OfferDTO updatedOfferDTO = prepareOfferDTOToUpdate();
 
         // WHEN
         when(offerRepository.findById(existingId)).thenReturn(Optional.of(offer));
@@ -169,8 +148,8 @@ class OfferServiceTest {
     @Test
     void archiveOffer_ShouldReturnArchivedOfferDTO() {
         // GIVEN
-        Long existingId = 1L;
-        Offer offer = prepareOffers().getFirst();
+        final Long existingId = 1L;
+        final Offer offer = prepareOffers().getFirst();
 
         // WHEN
         when(offerRepository.findById(existingId)).thenReturn(Optional.of(offer));
@@ -203,5 +182,32 @@ class OfferServiceTest {
                 new Offer(2L, "Mark2", 2011L, 100001L, 2.1, "Description2", 10001.0, LocalDateTime.now(), OfferStatus.ACTIVE),
                 new Offer(3L, "Mark3", 2012L, 100002L, 2.2, "Description3", 10002.0, LocalDateTime.now(), OfferStatus.ACTIVE)
         );
+    }
+
+    private static OfferDTO prepareOfferDTOToCreate() {
+        return OfferDTO.builder()
+                .productionYear(2010L)
+                .mark("Mark1")
+                .millage(100000L)
+                .engineCapacity(2.0)
+                .description("Description1")
+                .price(10000.0)
+                .createDate(LocalDateTime.now())
+                .status(OfferStatus.ACTIVE)
+                .build();
+    }
+
+    private static OfferDTO prepareOfferDTOToUpdate() {
+        return OfferDTO.builder()
+                .id(1L)
+                .productionYear(2013L)
+                .mark("Mark4")
+                .millage(100003L)
+                .engineCapacity(2.3)
+                .description("Description4")
+                .price(10003.0)
+                .createDate(LocalDateTime.now())
+                .status(OfferStatus.ACTIVE)
+                .build();
     }
 }
