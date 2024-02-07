@@ -25,8 +25,13 @@ class OfferServiceImpl implements OfferService {
 
     @Override
     public Optional<OfferDTO> getOfferById(Long id) {
-        return offerRepository.findById(id)
-                .map(OfferMapper.INSTANCE::offerToOfferDTO);
+        Optional<Offer> optionalOffer = offerRepository.findById(id);
+
+        if (optionalOffer.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        return optionalOffer.map(OfferMapper.INSTANCE::offerToOfferDTO);
     }
 
     @Override
