@@ -11,6 +11,6 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> entityNotFoundExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found");
     }
 }
