@@ -4,6 +4,7 @@ import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
 import com.gearglobe.app.backend.client.api.dtos.ClientGetDTO;
 import com.gearglobe.app.backend.client.api.dtos.ClientPostDTO;
 import com.gearglobe.app.backend.client.domain.ClientFacade;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,22 +29,22 @@ class ClientController {
     }
 
     @PostMapping
-    public ClientPostDTO createClient(@RequestBody ClientPostDTO clientDTO, @RequestBody AddressDTO addressDTO) {
+    public ClientPostDTO createClient(@Valid @RequestBody ClientPostDTO clientDTO, @RequestBody AddressDTO addressDTO) {
         return clientFacade.createClient(clientDTO, addressDTO);
     }
 
     @PutMapping("/{id}")
-    public ClientPostDTO updateClient(@RequestBody ClientPostDTO clientDTO) {
+    public ClientPostDTO updateClient(@Valid @RequestBody ClientPostDTO clientDTO) {
         return clientFacade.updateClient(clientDTO);
     }
 
     @PatchMapping("/{id}/address")
-    public ClientPostDTO updateClientAddress(@PathVariable Long id, @RequestBody AddressDTO addressDTO) {
+    public ClientPostDTO updateClientAddress(@PathVariable Long id, @Valid @RequestBody AddressDTO addressDTO) {
         return clientFacade.updateClientAddress(id, addressDTO);
     }
 
     @PatchMapping("/{id}/password")
-    public ClientPostDTO changeClientPassword(@PathVariable Long id, @RequestBody String password) {
+    public ClientPostDTO changeClientPassword(@PathVariable Long id, @Valid @RequestBody String password) {
         return clientFacade.changeClientPassword(id, password);
     }
 

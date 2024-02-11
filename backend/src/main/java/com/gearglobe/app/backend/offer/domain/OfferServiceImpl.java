@@ -35,8 +35,9 @@ class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDTO createOffer(OfferDTO offerDTO) {
+    public OfferDTO createOffer(OfferDTO offerDTO, Long clientId) {
         Offer offer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
+        offer.setClientId(clientId);
         Offer saveOffer = offerRepository.save(offer);
         return OfferMapper.INSTANCE.offerToOfferDTO(saveOffer);
     }

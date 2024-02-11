@@ -44,4 +44,7 @@ class Offer {
     @NonNull
     @Enumerated(EnumType.STRING)
     private OfferStatus status;
+
+    @NonNull
+    private Long clientId;
 }
