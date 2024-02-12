@@ -24,12 +24,17 @@ class Address {
     @NonNull
     private String houseNumber;
 
+    private String apartmentNumber;
+
     @NonNull
     private String country;
 
-    @OneToOne(mappedBy = "address")
+    @NonNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
     @NonNull
+    @Enumerated(EnumType.STRING)
     private AddressStatus status;
 }

@@ -1,46 +1,44 @@
 package com.gearglobe.app.backend.client.domain;
 
 import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientGetDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientPostDTO;
+import com.gearglobe.app.backend.client.api.dtos.ClientResponseDTO;
+import com.gearglobe.app.backend.client.api.dtos.ClientRequestDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class ClientFacadeImpl implements ClientFacade{
     private final ClientService clientService;
 
-
-    public List<ClientGetDTO> getAllClients() {
+    public List<ClientResponseDTO> getAllClients() {
         return clientService.getAllClients();
     }
 
-    public Optional<ClientGetDTO> getClientById(Long id) {
+    public ClientResponseDTO getClientById(Long id) {
         return clientService.getClientById(id);
     }
 
-    public ClientPostDTO createClient(ClientPostDTO clientDTO, AddressDTO addressDTO) {
-        return clientService.createClient(clientDTO, addressDTO);
+    public ClientResponseDTO createClient(ClientRequestDTO clientDTO) {
+        return clientService.createClient(clientDTO);
     }
 
-    public ClientPostDTO updateClient(ClientPostDTO clientDTO) throws EntityNotFoundException {
-        return clientService.updateClient(clientDTO);
+    public ClientResponseDTO updateClient(Long id, ClientRequestDTO clientDTO) throws EntityNotFoundException {
+        return clientService.updateClient(id, clientDTO);
     }
 
-    public ClientPostDTO updateClientAddress(Long id, AddressDTO addressDTO) throws EntityNotFoundException {
+    public AddressDTO updateClientAddress(Long id, AddressDTO addressDTO) throws EntityNotFoundException {
         return clientService.updateClientAddress(id, addressDTO);
     }
 
-    public ClientPostDTO changeClientPassword(Long id, String password) throws EntityNotFoundException {
+    public Long changeClientPassword(Long id, String password) throws EntityNotFoundException {
         return clientService.changeClientPassword(id, password);
     }
 
-    public ClientPostDTO deactivateClient(Long id) throws EntityNotFoundException {
+    public Long deactivateClient(Long id) throws EntityNotFoundException {
         return clientService.deactivateClient(id);
     }
 }

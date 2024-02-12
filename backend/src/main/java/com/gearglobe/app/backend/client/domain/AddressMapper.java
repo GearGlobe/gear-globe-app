@@ -7,6 +7,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 interface AddressMapper {
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
-    Address addressDTOToAddress(AddressDTO addressDTO);
-    AddressDTO addressToAddressDTO(Address address);
+    Address map(AddressDTO addressDTO);
+    AddressDTO map(Address address);
 }
