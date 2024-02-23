@@ -23,39 +23,40 @@ class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
+    @Column(nullable = false)
     private String name;
 
     private String lastName;
 
-    @NonNull
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ClientType clientType;
 
     private LocalDate birthDate;
 
-    @NonNull
+    @Column(nullable = false)
     private String email;
 
-    @NonNull
+    @Column(nullable = false)
     private String phoneNumber;
 
     @OneToOne(mappedBy = "client")
     private Address address;
 
-    @NonNull
+    @Column(nullable = false)
     private String password;
 
-    @NonNull
+    @Column(nullable = false)
     private String role;
 
-    @CreatedDate()
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-    @NonNull
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ClientStatus status;
 

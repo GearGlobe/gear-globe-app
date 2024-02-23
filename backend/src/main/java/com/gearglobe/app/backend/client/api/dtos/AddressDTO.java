@@ -26,7 +26,4 @@ public class AddressDTO {
     @NotBlank(message = "Country is mandatory")
     @Size(max = 56, message = "Country must have at most 56 characters")
     private String country;
-
-    @NotBlank(message = "Status is mandatory")
-    private AddressStatus status;
 }

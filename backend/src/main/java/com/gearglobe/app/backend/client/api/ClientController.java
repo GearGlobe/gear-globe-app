@@ -1,6 +1,7 @@
 package com.gearglobe.app.backend.client.api;
 
 import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
+import com.gearglobe.app.backend.client.api.dtos.ClientRequestUpdateDTO;
 import com.gearglobe.app.backend.client.api.dtos.ClientResponseDTO;
 import com.gearglobe.app.backend.client.api.dtos.ClientRequestDTO;
 import com.gearglobe.app.backend.client.domain.ClientFacade;
@@ -33,11 +34,11 @@ class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ClientResponseDTO updateClient(@PathVariable Long id ,@Valid @RequestBody ClientRequestDTO clientDTO) {
+    public ClientResponseDTO updateClient(@PathVariable Long id , @Valid @RequestBody ClientRequestUpdateDTO clientDTO) {
         return clientFacade.updateClient(id, clientDTO);
     }
 
-    @PatchMapping("/{id}/address/")
+    @PatchMapping("/{id}/address")
     public AddressDTO updateClientAddress(@PathVariable Long id, @Valid @RequestBody AddressDTO addressDTO) {
         return clientFacade.updateClientAddress(id, addressDTO);
     }

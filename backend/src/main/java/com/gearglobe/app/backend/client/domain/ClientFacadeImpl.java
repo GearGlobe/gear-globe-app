@@ -1,6 +1,7 @@
 package com.gearglobe.app.backend.client.domain;
 
 import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
+import com.gearglobe.app.backend.client.api.dtos.ClientRequestUpdateDTO;
 import com.gearglobe.app.backend.client.api.dtos.ClientResponseDTO;
 import com.gearglobe.app.backend.client.api.dtos.ClientRequestDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,7 +27,7 @@ public class ClientFacadeImpl implements ClientFacade{
         return clientService.createClient(clientDTO);
     }
 
-    public ClientResponseDTO updateClient(Long id, ClientRequestDTO clientDTO) throws EntityNotFoundException {
+    public ClientResponseDTO updateClient(Long id, ClientRequestUpdateDTO clientDTO) throws EntityNotFoundException {
         return clientService.updateClient(id, clientDTO);
     }
 

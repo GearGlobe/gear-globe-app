@@ -1,6 +1,5 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.AddressStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,26 +14,22 @@ class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
+    @Column(nullable = false)
     private String city;
 
-    @NonNull
+    @Column(nullable = false)
     private String street;
 
-    @NonNull
+    @Column(nullable = false)
     private String houseNumber;
 
     private String apartmentNumber;
 
-    @NonNull
+    @Column(nullable = false)
     private String country;
 
-    @NonNull
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
-
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private AddressStatus status;
 }
