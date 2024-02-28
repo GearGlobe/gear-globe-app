@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-class ClientServiceImpl implements ClientService{
+class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final AddressRepository addressRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -36,6 +36,7 @@ class ClientServiceImpl implements ClientService{
         Client client = ClientMapper.INSTANCE.map(clientDTO);
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         client.setStatus(ClientStatus.ACTIVE);
+        client.setRole(ClientRole.CLIENT);
 
         if (client.getClientType() == ClientType.PERSON){
             if (client.getLastName() == null || client.getBirthDate() == null){
@@ -51,7 +52,6 @@ class ClientServiceImpl implements ClientService{
 
         client.setAddress(saveAddress);
         Client saveClient = clientRepository.save(client);
-
 
         return ClientMapper.INSTANCE.map(saveClient);
     }

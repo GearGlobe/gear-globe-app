@@ -1,5 +1,6 @@
 package com.gearglobe.app.backend.client.domain;
 
+import com.gearglobe.app.backend.client.api.dtos.ClientRole;
 import com.gearglobe.app.backend.client.api.dtos.ClientStatus;
 import com.gearglobe.app.backend.client.api.dtos.ClientType;
 import jakarta.persistence.*;
@@ -12,8 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
@@ -47,7 +47,8 @@ class Client {
     private String password;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private ClientRole role;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

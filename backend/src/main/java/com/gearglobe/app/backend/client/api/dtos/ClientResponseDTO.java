@@ -16,6 +16,6 @@ public class ClientResponseDTO {
     private String email;
     private String phoneNumber;
     private AddressDTO address;
-    private String role;
+    private ClientRole role;
     private ClientStatus status;
 }

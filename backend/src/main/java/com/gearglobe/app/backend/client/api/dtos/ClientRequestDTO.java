@@ -38,7 +38,4 @@ public class ClientRequestDTO {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$", message = "Password must have at least 8 characters, one uppercase letter, one lowercase letter and one number")
     private String password;
 
-    @NotBlank(message = "Role is mandatory")
-    private String role;
-
 }

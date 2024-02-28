@@ -31,6 +31,4 @@ public class ClientRequestUpdateDTO {
     @Pattern(regexp = "^[0-9]{9}$", message = "Phone number must have 9 digits")
     private String phoneNumber;
 
-    @NotBlank(message = "Role is mandatory")
-    private String role;
 }
