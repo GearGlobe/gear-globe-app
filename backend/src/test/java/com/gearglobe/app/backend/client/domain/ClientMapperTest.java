@@ -2,6 +2,7 @@ package com.gearglobe.app.backend.client.domain;
 
 import com.gearglobe.app.backend.client.api.dtos.*;
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,19 +13,20 @@ public class ClientMapperTest {
     @Test
     void testClientToClientResponseDTO() {
         // Given
-        Client client = new Client();
-        client.setId(1L);
-        client.setName("Sample First Name");
-        client.setLastName("Sample Last Name");
-        client.setClientType(ClientType.PERSON);
-        client.setBirthDate(LocalDate.now());
-        client.setEmail("sample.email@gmail.com");
-        client.setPhoneNumber("123456789");
-        client.setPassword("samplePassword");
-        client.setRole("sampleRole");
-        client.setCreatedDate(LocalDateTime.now());
-        client.setModifiedDate(LocalDateTime.now());
-        client.setStatus(ClientStatus.ACTIVE);
+        Client client = Client.builder()
+                .id(1L)
+                .name("Sample First Name")
+                .lastName("Sample Last Name")
+                .clientType(ClientType.PERSON)
+                .birthDate(LocalDate.now())
+                .email("sample.email@gmail.com")
+                .phoneNumber("123456789")
+                .password("samplePassword")
+                .role(ClientRole.CLIENT)
+                .createdDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
+                .status(ClientStatus.ACTIVE)
+                .build();
 
         // When
         ClientResponseDTO clientResponseDTO = ClientMapper.INSTANCE.map(client);
@@ -59,7 +61,6 @@ public class ClientMapperTest {
                         .country("Sample Country")
                         .build())
                 .password("samplePassword")
-                .role("sampleRole")
                 .build();
 
         // When
@@ -74,8 +75,8 @@ public class ClientMapperTest {
                 () -> assertEquals(clientRequestDTO.getEmail(), client.getEmail()),
                 () -> assertEquals(clientRequestDTO.getPhoneNumber(), client.getPhoneNumber()),
                 () -> assertEquals(clientRequestDTO.getPassword(), client.getPassword()),
-                () -> assertEquals(clientRequestDTO.getAddress().getStreet(), client.getAddress().getStreet()),
-                () -> assertEquals(clientRequestDTO.getRole(), client.getRole()));
+                () -> assertEquals(clientRequestDTO.getAddress().getStreet(), client.getAddress().getStreet())
+        );
     }
 
     @Test
@@ -88,7 +89,6 @@ public class ClientMapperTest {
                 .birthDate(LocalDate.now())
                 .email("sample.email@gmail.com")
                 .phoneNumber("123456789")
-                .role("sampleRole")
                 .build();
         // When
         Client client = ClientMapper.INSTANCE.map(clientRequestUpdateDTO);
@@ -100,7 +100,7 @@ public class ClientMapperTest {
                 () -> assertEquals(clientRequestUpdateDTO.getClientType(), client.getClientType()),
                 () -> assertEquals(clientRequestUpdateDTO.getBirthDate(), client.getBirthDate()),
                 () -> assertEquals(clientRequestUpdateDTO.getEmail(), client.getEmail()),
-                () -> assertEquals(clientRequestUpdateDTO.getPhoneNumber(), client.getPhoneNumber()),
-                () -> assertEquals(clientRequestUpdateDTO.getRole(), client.getRole()));
+                () -> assertEquals(clientRequestUpdateDTO.getPhoneNumber(), client.getPhoneNumber())
+        );
     }
 }

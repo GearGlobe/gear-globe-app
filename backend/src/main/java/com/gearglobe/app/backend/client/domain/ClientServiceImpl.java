@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -38,10 +39,8 @@ class ClientServiceImpl implements ClientService {
         client.setStatus(ClientStatus.ACTIVE);
         client.setRole(ClientRole.CLIENT);
 
-        if (client.getClientType() == ClientType.PERSON){
-            if (client.getLastName() == null || client.getBirthDate() == null){
-                throw new IllegalArgumentException("Last name and birthdate are required for person type client");
-            }
+        if (isPersonNotValid(client)) {
+            throw new IllegalArgumentException("Last name and birthdate are required for person type client");
         }
 
         AddressDTO addressDTO = clientDTO.getAddress();
@@ -60,12 +59,17 @@ class ClientServiceImpl implements ClientService {
     public ClientResponseDTO updateClient(Long id, ClientRequestUpdateDTO clientDTO) {
         return clientRepository.findById(id)
                 .map(client -> {
-                    Client newClient = ClientMapper.INSTANCE.map(clientDTO);
-                    newClient.setId(client.getId());
-                    newClient.setAddress(client.getAddress());
-                    newClient.setPassword(client.getPassword());
-                    newClient.setStatus(client.getStatus());
-                    return clientRepository.save(newClient);
+                    Client updatedClient = ClientMapper.INSTANCE.map(clientDTO);
+
+                    if (isPersonNotValid(updatedClient)) {
+                        throw new IllegalArgumentException("Last name and birthdate are required for person type client");
+                    }
+
+                    updatedClient.setId(client.getId());
+                    updatedClient.setAddress(client.getAddress());
+                    updatedClient.setPassword(client.getPassword());
+                    updatedClient.setStatus(client.getStatus());
+                    return clientRepository.save(updatedClient);
                 })
                 .map(ClientMapper.INSTANCE::map)
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
@@ -109,4 +113,9 @@ class ClientServiceImpl implements ClientService {
             return client.getId();
         }).orElseThrow(() -> new EntityNotFoundException("Client not found"));
     }
+
+    private boolean isPersonNotValid(Client client) {
+        return client.getClientType() == ClientType.PERSON && (Objects.isNull(client.getLastName()) || Objects.isNull(client.getBirthDate()));
+    }
 }
+
