@@ -36,7 +36,7 @@ class ClientServiceImpl implements ClientService {
     public ClientResponseDTO getClientById(Long id) {
         return clientRepository.findById(id)
                 .map(ClientMapper.INSTANCE::map)
-                .orElseThrow(ClientNotFoundException::new);
+                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
     }
 
     @Override
@@ -73,7 +73,7 @@ class ClientServiceImpl implements ClientService {
                     Client updatedClient = ClientMapper.INSTANCE.map(clientDTO);
 
                     if (isPersonNotValid(updatedClient)) {
-                        throw new IncorrectClientTypeDataException();
+                        throw new IncorrectClientTypeDataException("Last name and birth date are required for person type!");
                     }
 
                     updatedClient.setId(client.getId());

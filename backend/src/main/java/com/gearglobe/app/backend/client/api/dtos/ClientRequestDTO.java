@@ -11,11 +11,11 @@ import java.time.LocalDate;
 @Builder
 public class ClientRequestDTO {
     @NotBlank(message = "Name is mandatory")
-    @Size(min = 3, message = "Name must have at least 3 characters")
+    @Size(min = 2, message = "Name must have at least 3 characters")
     @Size(max = 50, message = "Name must have at most 50 characters")
     private String name;
 
-    @Size(min = 3, message = "Name must have at least 3 characters")
+    @Size(min = 2, message = "Name must have at least 3 characters")
     @Size(max = 50, message = "Name must have at most 50 characters")
     private String lastName;
 

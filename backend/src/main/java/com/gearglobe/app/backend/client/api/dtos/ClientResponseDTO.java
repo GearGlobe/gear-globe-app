@@ -19,7 +19,7 @@ public class ClientResponseDTO {
     private LocalDate birthDate;
     private String email;
     private String phoneNumber;
-    private AddressRequestDTO address;
+    private AddressResponseDTO address;
     private ClientRole role;
     private ClientStatus status;
 }
