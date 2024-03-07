@@ -1,5 +1,6 @@
 package com.gearglobe.app.backend.client.api.dtos;
 
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;

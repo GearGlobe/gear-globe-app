@@ -51,7 +51,7 @@ class OfferServiceImpl implements OfferService {
                     return offerRepository.save(newOffer);
                 })
                 .map(OfferMapper.INSTANCE::offerToOfferDTO)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("test"));
     }
 
     @Override

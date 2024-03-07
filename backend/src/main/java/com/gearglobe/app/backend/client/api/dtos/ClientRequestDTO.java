@@ -1,5 +1,6 @@
 package com.gearglobe.app.backend.client.api.dtos;
 
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
@@ -32,10 +33,9 @@ public class ClientRequestDTO {
     private String phoneNumber;
 
     @NotNull
-    private AddressDTO address;
+    private AddressRequestDTO address;
 
     @NotBlank(message = "Password is mandatory")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$", message = "Password must have at least 8 characters, one uppercase letter, one lowercase letter and one number")
     private String password;
 
 }

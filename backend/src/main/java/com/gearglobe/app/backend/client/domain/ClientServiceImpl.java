@@ -1,7 +1,13 @@
 package com.gearglobe.app.backend.client.domain;
 
 import com.gearglobe.app.backend.client.api.dtos.*;
-import jakarta.persistence.EntityNotFoundException;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientRole;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientStatus;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
+import com.gearglobe.app.backend.configuration.exception.AddressNotFoundException;
+import com.gearglobe.app.backend.configuration.exception.ClientNotFoundException;
+import com.gearglobe.app.backend.configuration.exception.IncorrectClientTypeDataException;
+import com.gearglobe.app.backend.configuration.exception.IncorrectPasswordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,23 +34,28 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponseDTO getClientById(Long id) {
-        return clientRepository.findById(id).map(ClientMapper.INSTANCE::map).orElseThrow(() -> new EntityNotFoundException("Client not found"));
+        return clientRepository.findById(id)
+                .map(ClientMapper.INSTANCE::map)
+                .orElseThrow(ClientNotFoundException::new);
     }
 
     @Override
     @Transactional
     public ClientResponseDTO createClient(ClientRequestDTO clientDTO) {
         Client client = ClientMapper.INSTANCE.map(clientDTO);
+        if (isPasswordNotValid(client.getPassword())) {
+            throw new IncorrectPasswordException("Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character!");
+        }
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         client.setStatus(ClientStatus.ACTIVE);
         client.setRole(ClientRole.CLIENT);
 
         if (isPersonNotValid(client)) {
-            throw new IllegalArgumentException("Last name and birthdate are required for person type client");
+            throw new IncorrectClientTypeDataException("Last name and birth date are required for person type!");
         }
 
-        AddressDTO addressDTO = clientDTO.getAddress();
-        Address address = AddressMapper.INSTANCE.map(addressDTO);
+        AddressRequestDTO addressRequestDTO = clientDTO.getAddress();
+        Address address = AddressMapper.INSTANCE.map(addressRequestDTO);
 
         address.setClient(client);
         Address saveAddress = addressRepository.save(address);
@@ -62,41 +73,49 @@ class ClientServiceImpl implements ClientService {
                     Client updatedClient = ClientMapper.INSTANCE.map(clientDTO);
 
                     if (isPersonNotValid(updatedClient)) {
-                        throw new IllegalArgumentException("Last name and birthdate are required for person type client");
+                        throw new IncorrectClientTypeDataException();
                     }
 
                     updatedClient.setId(client.getId());
                     updatedClient.setAddress(client.getAddress());
                     updatedClient.setPassword(client.getPassword());
                     updatedClient.setStatus(client.getStatus());
+                    updatedClient.setRole(client.getRole());
                     return clientRepository.save(updatedClient);
                 })
                 .map(ClientMapper.INSTANCE::map)
-                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
     }
 
     @Override
-    public AddressDTO updateClientAddress(Long id, AddressDTO addressDTO) {
+    public AddressResponseDTO updateClientAddress(Long id, AddressRequestDTO addressRequestDTO) {
         return addressRepository.findByClientId(id)
                 .map(address -> {
-                    Address newAddress = AddressMapper.INSTANCE.map(addressDTO);
+                    Address newAddress = AddressMapper.INSTANCE.map(addressRequestDTO);
                     newAddress.setId(address.getId());
                     newAddress.setClient(address.getClient());
                     return addressRepository.save(newAddress);
                 })
                 .map(AddressMapper.INSTANCE::map)
-                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
+                .orElseThrow(() -> new AddressNotFoundException("Address not found"));
     }
 
     @Override
-    public Long changeClientPassword(Long id, String password) {
+    public Long changeClientPassword(Long id, String oldPasswordToCheck, String password) {
+        if (isPasswordNotValid(password)) {
+            throw new IncorrectPasswordException("New password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character!");
+        }
+
         return clientRepository.findById(id)
                 .map(client -> {
+                    if (!passwordEncoder.matches(oldPasswordToCheck, client.getPassword())) {
+                        throw new IncorrectPasswordException("Old password is incorrect!");
+                    }
                     client.setPassword(passwordEncoder.encode(password));
                     clientRepository.save(client);
                     return client.getId();
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
     }
 
     @Override
@@ -111,11 +130,14 @@ class ClientServiceImpl implements ClientService {
             }
 
             return client.getId();
-        }).orElseThrow(() -> new EntityNotFoundException("Client not found"));
+        }).orElseThrow(() -> new ClientNotFoundException("Client not found"));
     }
 
     private boolean isPersonNotValid(Client client) {
         return client.getClientType() == ClientType.PERSON && (Objects.isNull(client.getLastName()) || Objects.isNull(client.getBirthDate()));
     }
-}
 
+    private boolean isPasswordNotValid(String password) {
+        return !password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$)(?=.*[!@#$%^&*/\\\\()\\-_=+]).{8,}$");
+    }
+}

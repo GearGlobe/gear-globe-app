@@ -11,6 +11,5 @@ interface ClientMapper {
     ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
     ClientResponseDTO map(Client client);
     Client map(ClientRequestDTO clientDTO);
-
     Client map(ClientRequestUpdateDTO clientDTO);
 }

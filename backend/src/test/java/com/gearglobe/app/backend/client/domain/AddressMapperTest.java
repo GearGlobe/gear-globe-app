@@ -1,6 +1,7 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
+import com.gearglobe.app.backend.client.api.dtos.AddressRequestDTO;
+import com.gearglobe.app.backend.client.api.dtos.AddressResponseDTO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AddressMapperTest {
 
     @Test
-    void testAddressToAddressDTO() {
+    void testAddressToAddressResponseDTO() {
         // Given
         Address address = new Address();
         address.setId(1L);
@@ -19,21 +20,22 @@ public class AddressMapperTest {
         address.setCountry("Sample Country");
 
         // When
-        AddressDTO addressDTO = AddressMapper.INSTANCE.map(address);
+        AddressResponseDTO addressRequestDTO = AddressMapper.INSTANCE.map(address);
 
         // Then
         assertAll("Verify mapping properties to AddressDTO",
-                () -> assertEquals(address.getCity(), addressDTO.getCity()),
-                () -> assertEquals(address.getStreet(), addressDTO.getStreet()),
-                () -> assertEquals(address.getHouseNumber(), addressDTO.getHouseNumber()),
-                () -> assertEquals(address.getApartmentNumber(), addressDTO.getApartmentNumber()),
-                () -> assertEquals(address.getCountry(), addressDTO.getCountry()));
+                () -> assertEquals(address.getId(), addressRequestDTO.getId()),
+                () -> assertEquals(address.getCity(), addressRequestDTO.getCity()),
+                () -> assertEquals(address.getStreet(), addressRequestDTO.getStreet()),
+                () -> assertEquals(address.getHouseNumber(), addressRequestDTO.getHouseNumber()),
+                () -> assertEquals(address.getApartmentNumber(), addressRequestDTO.getApartmentNumber()),
+                () -> assertEquals(address.getCountry(), addressRequestDTO.getCountry()));
     }
 
     @Test
-    void testAddressDTOToAddress() {
+    void testAddressRequestDTOToAddress() {
         // Given
-        AddressDTO addressDTO = AddressDTO.builder()
+        AddressRequestDTO addressRequestDTO = AddressRequestDTO.builder()
                 .city("Sample City DTO")
                 .street("Sample Street DTO")
                 .houseNumber("Sample House Number DTO")
@@ -42,14 +44,14 @@ public class AddressMapperTest {
                 .build();
 
         // When
-        Address address = AddressMapper.INSTANCE.map(addressDTO);
+        Address address = AddressMapper.INSTANCE.map(addressRequestDTO);
 
         // Then
         assertAll("Verify mapping properties to Address",
-                () -> assertEquals(addressDTO.getCity(), address.getCity()),
-                () -> assertEquals(addressDTO.getStreet(), address.getStreet()),
-                () -> assertEquals(addressDTO.getHouseNumber(), address.getHouseNumber()),
-                () -> assertEquals(addressDTO.getApartmentNumber(), address.getApartmentNumber()),
-                () -> assertEquals(addressDTO.getCountry(), address.getCountry()));
+                () -> assertEquals(addressRequestDTO.getCity(), address.getCity()),
+                () -> assertEquals(addressRequestDTO.getStreet(), address.getStreet()),
+                () -> assertEquals(addressRequestDTO.getHouseNumber(), address.getHouseNumber()),
+                () -> assertEquals(addressRequestDTO.getApartmentNumber(), address.getApartmentNumber()),
+                () -> assertEquals(addressRequestDTO.getCountry(), address.getCountry()));
     }
 }

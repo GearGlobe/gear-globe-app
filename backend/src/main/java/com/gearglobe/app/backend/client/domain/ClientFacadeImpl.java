@@ -1,9 +1,6 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientRequestUpdateDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientResponseDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientRequestDTO;
+import com.gearglobe.app.backend.client.api.dtos.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -31,12 +28,12 @@ public class ClientFacadeImpl implements ClientFacade{
         return clientService.updateClient(id, clientDTO);
     }
 
-    public AddressDTO updateClientAddress(Long id, AddressDTO addressDTO) throws EntityNotFoundException {
-        return clientService.updateClientAddress(id, addressDTO);
+    public AddressResponseDTO updateClientAddress(Long id, AddressRequestDTO addressRequestDTO) throws EntityNotFoundException {
+        return clientService.updateClientAddress(id, addressRequestDTO);
     }
 
-    public Long changeClientPassword(Long id, String password) throws EntityNotFoundException {
-        return clientService.changeClientPassword(id, password);
+    public Long changeClientPassword(Long id, String oldPasswordToCheck, String password) throws EntityNotFoundException {
+        return clientService.changeClientPassword(id, oldPasswordToCheck, password);
     }
 
     public Long deactivateClient(Long id) throws EntityNotFoundException {

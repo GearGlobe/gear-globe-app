@@ -1,6 +1,9 @@
 package com.gearglobe.app.backend.client.domain;
 
 import com.gearglobe.app.backend.client.api.dtos.*;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientRole;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientStatus;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -53,7 +56,7 @@ public class ClientMapperTest {
                 .birthDate(LocalDate.now())
                 .email("sample.email@gmail.com")
                 .phoneNumber("123456789")
-                .address(AddressDTO.builder()
+                .address(AddressRequestDTO.builder()
                         .city("Sample City")
                         .street("Sample Street")
                         .houseNumber("Sample House Number")

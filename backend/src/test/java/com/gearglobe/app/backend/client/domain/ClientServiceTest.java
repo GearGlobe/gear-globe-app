@@ -5,7 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.gearglobe.app.backend.client.api.dtos.*;
-import jakarta.persistence.EntityNotFoundException;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientRole;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientStatus;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
+import com.gearglobe.app.backend.configuration.exception.ClientNotFoundException;
+import com.gearglobe.app.backend.configuration.exception.IncorrectClientTypeDataException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -88,7 +92,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void getOfferById_NonExistingId_ShouldThrowEntityNotFoundException() {
+    void getOfferById_NonExistingId_ShouldThrowClientNotFoundException() {
         // GIVEN
         final Long nonExistingId = 999L;
 
@@ -96,16 +100,16 @@ class ClientServiceTest {
         when(clientRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
         // THEN
-        assertThrows(EntityNotFoundException.class, () -> clientService.getClientById(nonExistingId));
+        assertThrows(ClientNotFoundException.class, () -> clientService.getClientById(nonExistingId));
     }
 
     @Test
     void createClientPerson_ShouldReturnClientResponseDTO() {
         // GIVEN
         final ClientRequestDTO clientDTO = prepareClientPersonDTOToCreate();
-        final AddressDTO addressDTO = prepareAddressDTO();
+        final AddressRequestDTO addressRequestDTO = prepareAddressDTO();
         final Client expectedClient = ClientMapper.INSTANCE.map(clientDTO);
-        final Address expectedAddress = AddressMapper.INSTANCE.map(addressDTO);
+        final Address expectedAddress = AddressMapper.INSTANCE.map(addressRequestDTO);
 
         // WHEN
         when(clientRepository.save(any(Client.class))).thenReturn(expectedClient);
@@ -135,9 +139,9 @@ class ClientServiceTest {
     void createClientCompany_ShouldReturnClientResponseDTO() {
         // GIVEN
         final ClientRequestDTO clientDTO = prepareClientCompanyDTOToCreate();
-        final AddressDTO addressDTO = prepareAddressDTO();
+        final AddressRequestDTO addressRequestDTO = prepareAddressDTO();
         final Client expectedClient = ClientMapper.INSTANCE.map(clientDTO);
-        final Address expectedAddress = AddressMapper.INSTANCE.map(addressDTO);
+        final Address expectedAddress = AddressMapper.INSTANCE.map(addressRequestDTO);
 
         // WHEN
         when(clientRepository.save(any(Client.class))).thenReturn(expectedClient);
@@ -164,19 +168,19 @@ class ClientServiceTest {
     }
 
     @Test
-    void createInvalidClientPerson_ShouldThrowIllegalArgumentException() {
+    void createInvalidClientPerson_ShouldThrowIncorrectClientTypeDataException() {
         // GIVEN
         final ClientRequestDTO clientDTO = prepareInvalidClientDTOToCreate();
-        final AddressDTO addressDTO = prepareAddressDTO();
+        final AddressRequestDTO addressRequestDTO = prepareAddressDTO();
         final Client expectedClient = ClientMapper.INSTANCE.map(clientDTO);
-        final Address expectedAddress = AddressMapper.INSTANCE.map(addressDTO);
+        final Address expectedAddress = AddressMapper.INSTANCE.map(addressRequestDTO);
 
         // WHEN
         when(clientRepository.save(any(Client.class))).thenReturn(expectedClient);
         when(addressRepository.save(any(Address.class))).thenReturn(expectedAddress);
 
         // THEN
-        assertThrows(IllegalArgumentException.class, () -> clientService.createClient(clientDTO));
+        assertThrows(IncorrectClientTypeDataException.class, () -> clientService.createClient(clientDTO));
     }
 
     @Test
@@ -207,7 +211,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void updateInvalidClient_ShouldThrowIllegalArgumentException() {
+    void updateInvalidClient_ShouldThrowIncorrectClientTypeDataException() {
         // GIVEN
         final Long existingId = 1L;
         final Client client = prepareClients().getFirst();
@@ -218,7 +222,7 @@ class ClientServiceTest {
         when(clientRepository.save(any(Client.class))).thenReturn(ClientMapper.INSTANCE.map(clientDTO));
 
         // THEN
-        assertThrows(IllegalArgumentException.class, () -> clientService.updateClient(existingId, clientDTO));
+        assertThrows(IncorrectClientTypeDataException.class, () -> clientService.updateClient(existingId, clientDTO));
     }
 
     @Test
@@ -226,23 +230,23 @@ class ClientServiceTest {
         // GIVEN
         final Long existingId = 1L;
         final Address address = prepareAddress();
-        final AddressDTO addressDTO = prepareAddressDTO();
+        final AddressRequestDTO addressRequestDTO = prepareAddressDTO();
 
         // WHEN
         when(addressRepository.findByClientId(existingId)).thenReturn(Optional.of(address));
-        when(addressRepository.save(any(Address.class))).thenReturn(AddressMapper.INSTANCE.map(addressDTO));
+        when(addressRepository.save(any(Address.class))).thenReturn(AddressMapper.INSTANCE.map(addressRequestDTO));
 
-        AddressDTO result = clientService.updateClientAddress(existingId, addressDTO);
+        AddressResponseDTO result = clientService.updateClientAddress(existingId, addressRequestDTO);
 
         // THEN
         assertAll("Verify returned updated DTO address",
-                () -> assertEquals(addressDTO.getCity(), result.getCity()),
+                () -> assertEquals(addressRequestDTO.getCity(), result.getCity()),
                 () -> assertNotEquals(address.getCity(), result.getCity()),
-                () -> assertEquals(addressDTO.getStreet(), result.getStreet()),
+                () -> assertEquals(addressRequestDTO.getStreet(), result.getStreet()),
                 () -> assertNotEquals(address.getStreet(), result.getStreet()),
-                () -> assertEquals(addressDTO.getHouseNumber(), result.getHouseNumber()),
-                () -> assertEquals(addressDTO.getApartmentNumber(), result.getApartmentNumber()),
-                () -> assertEquals(addressDTO.getCountry(), result.getCountry()),
+                () -> assertEquals(addressRequestDTO.getHouseNumber(), result.getHouseNumber()),
+                () -> assertEquals(addressRequestDTO.getApartmentNumber(), result.getApartmentNumber()),
+                () -> assertEquals(addressRequestDTO.getCountry(), result.getCountry()),
                 () -> assertNotEquals(address.getCountry(), result.getCountry())
         );
     }
@@ -251,23 +255,26 @@ class ClientServiceTest {
     void changeClientPassword_ShouldReturnClientId() {
         // GIVEN
         final Long existingId = 1L;
-        final String password = "newPassword";
+        final String password = "newPassword1!";
         final Client client = prepareClients().getFirst();
+        final String oldPassword = client.getPassword();
 
         // WHEN
         when(clientRepository.findById(existingId)).thenReturn(Optional.of(client));
+        when(passwordEncoder.matches(oldPassword, client.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(password)).thenReturn(password);
         when(clientRepository.save(any(Client.class))).thenAnswer(invocation -> {
             client.setPassword(password);
             return client;
         });
 
-        Long result = clientService.changeClientPassword(existingId, password);
+        Long result = clientService.changeClientPassword(existingId, oldPassword, password);
 
         // THEN
         assertAll("Verify changed password and returned client id",
                 () -> assertEquals(existingId, result),
                 () -> assertEquals(password, client.getPassword())
-                );
+        );
     }
 
     @Test
@@ -304,7 +311,7 @@ class ClientServiceTest {
                         .lastName("LastName1")
                         .birthDate(LocalDate.parse("2001-01-01"))
                         .phoneNumber("123456789")
-                        .password("password1")
+                        .password("Password1!")
                         .status(ClientStatus.ACTIVE)
                         .role(ClientRole.CLIENT)
                         .email("email1@gmail.com")
@@ -318,7 +325,7 @@ class ClientServiceTest {
                         .lastName("LastName2")
                         .birthDate(LocalDate.parse("2002-02-02"))
                         .phoneNumber("123456789")
-                        .password("password2")
+                        .password("Password2!")
                         .status(ClientStatus.SUSPENDED)
                         .role(ClientRole.CLIENT)
                         .email("email2@gmail.com")
@@ -332,7 +339,7 @@ class ClientServiceTest {
                         .lastName("LastName3")
                         .birthDate(LocalDate.parse("2003-03-03"))
                         .phoneNumber("123456789")
-                        .password("password3")
+                        .password("Password3!")
                         .status(ClientStatus.INACTIVE)
                         .role(ClientRole.CLIENT)
                         .email("email3@gmail.com")
@@ -344,7 +351,7 @@ class ClientServiceTest {
                         .id(4L)
                         .name("Name4")
                         .phoneNumber("123456789")
-                        .password("password4")
+                        .password("Password4!")
                         .status(ClientStatus.INACTIVE)
                         .role(ClientRole.CLIENT)
                         .email("email4@gmail.com")
@@ -361,7 +368,7 @@ class ClientServiceTest {
                 .lastName("LastNameDTO")
                 .birthDate(LocalDate.parse("2001-01-01"))
                 .email("emailDTO@gmail.com")
-                .password("passwordDTO")
+                .password("passwordDTO1!")
                 .clientType(ClientType.PERSON)
                 .phoneNumber("123456789")
                 .address(prepareAddressDTO())
@@ -372,7 +379,7 @@ class ClientServiceTest {
         return ClientRequestDTO.builder()
                 .name("NameDTO")
                 .email("emailDTO@gmail.com")
-                .password("passwordDTO")
+                .password("passwordDTO1!")
                 .clientType(ClientType.COMPANY)
                 .phoneNumber("123456789")
                 .address(prepareAddressDTO())
@@ -383,7 +390,7 @@ class ClientServiceTest {
         return ClientRequestDTO.builder()
                 .name("NameDTO")
                 .email("emailDTO@gmail.com")
-                .password("passwordDTO")
+                .password("passwordDTO1!")
                 .clientType(ClientType.PERSON)
                 .phoneNumber("123456789")
                 .address(prepareAddressDTO())
@@ -399,8 +406,8 @@ class ClientServiceTest {
                 .build();
     }
 
-    private static AddressDTO prepareAddressDTO() {
-        return AddressDTO.builder()
+    private static AddressRequestDTO prepareAddressDTO() {
+        return AddressRequestDTO.builder()
                 .city("CityDTO")
                 .street("StreetDTO")
                 .houseNumber("1")

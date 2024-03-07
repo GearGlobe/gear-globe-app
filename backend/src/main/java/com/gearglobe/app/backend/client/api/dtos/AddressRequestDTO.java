@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AddressDTO {
+public class AddressRequestDTO {
     @NotBlank(message = "City is mandatory")
     @Size(min = 2, message = "City must have at least 3 characters")
     @Size(max = 90, message = "City must have at most 90 characters")

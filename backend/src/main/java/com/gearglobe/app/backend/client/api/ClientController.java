@@ -1,9 +1,6 @@
 package com.gearglobe.app.backend.client.api;
 
-import com.gearglobe.app.backend.client.api.dtos.AddressDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientRequestUpdateDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientResponseDTO;
-import com.gearglobe.app.backend.client.api.dtos.ClientRequestDTO;
+import com.gearglobe.app.backend.client.api.dtos.*;
 import com.gearglobe.app.backend.client.domain.ClientFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,13 +36,13 @@ class ClientController {
     }
 
     @PatchMapping("/{id}/address")
-    public AddressDTO updateClientAddress(@PathVariable Long id, @Valid @RequestBody AddressDTO addressDTO) {
-        return clientFacade.updateClientAddress(id, addressDTO);
+    public AddressResponseDTO updateClientAddress(@PathVariable Long id, @Valid @RequestBody AddressRequestDTO addressRequestDTO) {
+        return clientFacade.updateClientAddress(id, addressRequestDTO);
     }
 
     @PatchMapping("/{id}/password")
-    public Long changeClientPassword(@PathVariable Long id, @Valid @RequestBody String password) {
-        return clientFacade.changeClientPassword(id, password);
+    public Long changeClientPassword(@PathVariable Long id, @Valid @RequestBody PasswordRequestUpdateDTO passwordDTO){
+        return clientFacade.changeClientPassword(id, passwordDTO.getOldPassword(), passwordDTO.getNewPassword());
     }
 
     @DeleteMapping("/{id}")

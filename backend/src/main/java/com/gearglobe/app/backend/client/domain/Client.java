@@ -1,8 +1,8 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.ClientRole;
-import com.gearglobe.app.backend.client.api.dtos.ClientStatus;
-import com.gearglobe.app.backend.client.api.dtos.ClientType;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientRole;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientStatus;
+import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
