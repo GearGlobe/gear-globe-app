@@ -98,11 +98,12 @@ class OfferServiceTest {
         // GIVEN
         final OfferDTO offerDTO = prepareOfferDTOToCreate();
         final Offer expectedOffer = prepareOffers().getFirst();
+        final Long clientId = 1L;
 
         // WHEN
         when(offerRepository.save(any(Offer.class))).thenReturn(expectedOffer);
 
-        OfferDTO result = offerService.createOffer(offerDTO);
+        OfferDTO result = offerService.createOffer(offerDTO, clientId);
 
         // THEN
         assertAll("Verify returned DTO offer",
@@ -178,9 +179,9 @@ class OfferServiceTest {
 
     private static List<Offer> prepareOffers() {
         return List.of(
-                new Offer(1L, "Mark1", 2010L, 100000L, 2.0, "Description1", 10000.0, LocalDateTime.now(), OfferStatus.ACTIVE),
-                new Offer(2L, "Mark2", 2011L, 100001L, 2.1, "Description2", 10001.0, LocalDateTime.now(), OfferStatus.ACTIVE),
-                new Offer(3L, "Mark3", 2012L, 100002L, 2.2, "Description3", 10002.0, LocalDateTime.now(), OfferStatus.ACTIVE)
+                new Offer(1L, "Mark1", 2010L, 100000L, 2.0, "Description1", 10000.0, LocalDateTime.now(), OfferStatus.ACTIVE, 1L),
+                new Offer(2L, "Mark2", 2011L, 100001L, 2.1, "Description2", 10001.0, LocalDateTime.now(), OfferStatus.ACTIVE, 2L),
+                new Offer(3L, "Mark3", 2012L, 100002L, 2.2, "Description3", 10002.0, LocalDateTime.now(), OfferStatus.ACTIVE, 3L)
         );
     }
 

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface OfferFacade {
     List<OfferDTO> getAllOffers();
     Optional<OfferDTO> getOfferById(Long id);
-    OfferDTO createOffer(OfferDTO offerDTO);
+    OfferDTO createOffer(OfferDTO offerDTO, Long clientId);
     OfferDTO updateOffer(OfferDTO offerDTO) throws EntityNotFoundException;
     OfferDTO archiveOffer(Long id) throws EntityNotFoundException;
 }

@@ -26,8 +26,8 @@ class OfferController {
     }
 
     @PostMapping
-    public OfferDTO createOffer(@Valid @RequestBody OfferDTO offerDTO) {
-        return offerFacade.createOffer(offerDTO);
+    public OfferDTO createOffer(@Valid @RequestBody OfferDTO offerDTO, @RequestParam Long clientId) {
+        return offerFacade.createOffer(offerDTO, clientId);
     }
 
     @PutMapping("/{id}")

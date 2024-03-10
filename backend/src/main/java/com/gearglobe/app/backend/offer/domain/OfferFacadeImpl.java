@@ -23,8 +23,8 @@ public class OfferFacadeImpl implements OfferFacade{
     }
 
     @Override
-    public OfferDTO createOffer(OfferDTO offerDTO) {
-        return offerService.createOffer(offerDTO);
+    public OfferDTO createOffer(OfferDTO offerDTO, Long clientId) {
+        return offerService.createOffer(offerDTO, clientId);
     }
 
     @Override

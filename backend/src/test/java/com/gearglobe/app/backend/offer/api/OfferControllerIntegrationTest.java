@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,8 +64,9 @@ class OfferControllerIntegrationTest {
                 .build();
 
         String response = mockMvc.perform(post(OfferController.OFFER_URL)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(testeeOffer)))
+                        .param("clientId", "1")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(testeeOffer)))
                 .andReturn().getResponse().getContentAsString();
 
         OfferDTO offer = objectMapper.readValue(response, OfferDTO.class);
@@ -88,8 +90,8 @@ class OfferControllerIntegrationTest {
                 .build();
 
         String response = mockMvc.perform(put(OfferController.OFFER_URL + "/1")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(testeeOffer)))
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(testeeOffer)))
                 .andReturn().getResponse().getContentAsString();
 
         OfferDTO offer = objectMapper.readValue(response, OfferDTO.class);
