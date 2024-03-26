@@ -25,12 +25,14 @@ class Offer {
     private String mark;
 
     @NonNull
+    @Column(name = "production_year")
     private Long productionYear;
 
     @NonNull
     private Long millage;
 
     @NonNull
+    @Column(name = "engine_capacity")
     private Double engineCapacity;
 
     private String description;
@@ -39,6 +41,7 @@ class Offer {
     private Double price;
 
     @NonNull
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
     @NonNull
@@ -46,5 +49,6 @@ class Offer {
     private OfferStatus status;
 
     @NonNull
+    @Column(name = "client_id")
     private Long clientId;
 }

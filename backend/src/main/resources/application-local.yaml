@@ -1,10 +1,6 @@
 spring:
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: update
-  liquibase:
-    change-log: database/changelog.yaml
   security:
     user:
       name: user
