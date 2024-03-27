@@ -28,18 +28,20 @@ class Client {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "client_type")
     @Enumerated(EnumType.STRING)
     private ClientType clientType;
 
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "phone_number")
     private String phoneNumber;
 
     @OneToOne(mappedBy = "client")
@@ -53,10 +55,11 @@ class Client {
     private ClientRole role;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "created_date")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+    @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
     @Column(nullable = false)

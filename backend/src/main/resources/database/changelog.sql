@@ -1,0 +1,42 @@
+--liquibase formatted sql
+--changeset cookie9161:1
+CREATE TABLE IF NOT EXISTS client (
+id BIGSERIAL PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+last_name VARCHAR(255),
+client_type VARCHAR(255) NOT NULL,
+birth_date DATE,
+email VARCHAR(255) NOT NULL,
+phone_number VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL,
+role VARCHAR(255) NOT NULL,
+created_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+modified_date TIMESTAMP WITHOUT TIME ZONE,
+status VARCHAR(255) NOT NULL
+);
+
+--changeset cookie9161:2
+CREATE TABLE IF NOT EXISTS address (
+id BIGSERIAL PRIMARY KEY,
+city VARCHAR(255) NOT NULL,
+street VARCHAR(255) NOT NULL,
+house_number VARCHAR(255) NOT NULL,
+apartment_number VARCHAR(255),
+country VARCHAR(255) NOT NULL,
+client_id BIGINT,
+FOREIGN KEY (client_id) REFERENCES client(id)
+);
+
+--changeset cookie9161:3
+CREATE TABLE IF NOT EXISTS offer (
+id BIGSERIAL PRIMARY KEY,
+mark VARCHAR(255) NOT NULL,
+production_year BIGINT NOT NULL,
+millage BIGINT NOT NULL,
+engine_capacity DOUBLE PRECISION NOT NULL,
+description VARCHAR(255),
+price DOUBLE PRECISION NOT NULL,
+create_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+status VARCHAR(255) NOT NULL,
+client_id BIGINT NOT NULL
+);

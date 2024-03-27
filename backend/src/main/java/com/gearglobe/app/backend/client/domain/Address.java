@@ -20,9 +20,10 @@ class Address {
     @Column(nullable = false)
     private String street;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "house_number")
     private String houseNumber;
 
+    @Column(name = "apartment_number")
     private String apartmentNumber;
 
     @Column(nullable = false)
