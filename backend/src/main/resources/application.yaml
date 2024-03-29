@@ -11,3 +11,5 @@ spring:
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: database/changelog.sql
