@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
+import com.gearglobe.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,22 +34,22 @@ class OfferServiceTest {
         // WHEN
         when(offerRepository.findAll()).thenReturn(expectedOffers);
 
-        List<OfferDTO> result = offerService.getAllOffers();
+        List<OfferResponseDTO> result = offerService.getAllOffers();
 
         // THEN
         assertFalse(result.isEmpty());
 
         assertAll("Verify returned list of DTO offers",
                 () -> assertEquals(expectedOffers.size(), result.size()),
-                () -> assertThat(result).extracting(OfferDTO::getId).contains(1L, 2L, 3L),
-                () -> assertThat(result).extracting(OfferDTO::getMark).contains("Mark1", "Mark2", "Mark3"),
-                () -> assertThat(result).extracting(OfferDTO::getProductionYear).contains(2010L, 2011L, 2012L),
-                () -> assertThat(result).extracting(OfferDTO::getMillage).contains(100000L, 100001L, 100002L),
-                () -> assertThat(result).extracting(OfferDTO::getEngineCapacity).contains(2.0, 2.1, 2.2),
-                () -> assertThat(result).extracting(OfferDTO::getDescription).contains("Description1", "Description2", "Description3"),
-                () -> assertThat(result).extracting(OfferDTO::getPrice).contains(10000.0, 10001.0, 10002.0),
-                () -> assertThat(result).extracting(OfferDTO::getCreateDate).isNotNull(),
-                () -> assertThat(result).extracting(OfferDTO::getStatus).contains(OfferStatus.ACTIVE, OfferStatus.ACTIVE, OfferStatus.ACTIVE)
+                () -> assertThat(result).extracting(OfferResponseDTO::getId).contains(1L, 2L, 3L),
+                () -> assertThat(result).extracting(OfferResponseDTO::getMark).contains("Mark1", "Mark2", "Mark3"),
+                () -> assertThat(result).extracting(OfferResponseDTO::getProductionYear).contains(2010L, 2011L, 2012L),
+                () -> assertThat(result).extracting(OfferResponseDTO::getMillage).contains(100000L, 100001L, 100002L),
+                () -> assertThat(result).extracting(OfferResponseDTO::getEngineCapacity).contains(2.0, 2.1, 2.2),
+                () -> assertThat(result).extracting(OfferResponseDTO::getDescription).contains("Description1", "Description2", "Description3"),
+                () -> assertThat(result).extracting(OfferResponseDTO::getPrice).contains(10000.0, 10001.0, 10002.0),
+                () -> assertThat(result).extracting(OfferResponseDTO::getCreateDate).isNotNull(),
+                () -> assertThat(result).extracting(OfferResponseDTO::getStatus).contains(OfferStatusDTO.ACTIVE, OfferStatusDTO.ACTIVE, OfferStatusDTO.ACTIVE)
         );
     }
 
@@ -63,21 +63,19 @@ class OfferServiceTest {
         // WHEN
         when(offerRepository.findById(existingId)).thenReturn(Optional.of(expectedOffer));
 
-        Optional<OfferDTO> result = offerService.getOfferById(existingId);
+        OfferResponseDTO result = offerService.getOfferById(existingId);
 
         // THEN
-        assertTrue(result.isPresent());
-
         assertAll("Verify returned DTO offer",
-                () -> assertEquals(expectedOffer.getId(), result.get().getId()),
-                () -> assertEquals(expectedOffer.getMark(), result.get().getMark()),
-                () -> assertEquals(expectedOffer.getProductionYear(), result.get().getProductionYear()),
-                () -> assertEquals(expectedOffer.getMillage(), result.get().getMillage()),
-                () -> assertEquals(expectedOffer.getEngineCapacity(), result.get().getEngineCapacity()),
-                () -> assertEquals(expectedOffer.getDescription(), result.get().getDescription()),
-                () -> assertEquals(expectedOffer.getPrice(), result.get().getPrice()),
-                () -> assertEquals(expectedOffer.getCreateDate(), result.get().getCreateDate()),
-                () -> assertEquals(expectedOffer.getStatus(), result.get().getStatus())
+                () -> assertEquals(expectedOffer.getId(), result.getId()),
+                () -> assertEquals(expectedOffer.getMark(), result.getMark()),
+                () -> assertEquals(expectedOffer.getProductionYear(), result.getProductionYear()),
+                () -> assertEquals(expectedOffer.getMillage(), result.getMillage()),
+                () -> assertEquals(expectedOffer.getEngineCapacity(), result.getEngineCapacity()),
+                () -> assertEquals(expectedOffer.getDescription(), result.getDescription()),
+                () -> assertEquals(expectedOffer.getPrice(), result.getPrice()),
+                () -> assertEquals(expectedOffer.getCreateDate(), result.getCreateDate()),
+                () -> assertEquals(expectedOffer.getStatus(), result.getStatus())
         );
     }
 
@@ -96,14 +94,14 @@ class OfferServiceTest {
     @Test
     void createOffer_ShouldReturnOfferDTO() {
         // GIVEN
-        final OfferDTO offerDTO = prepareOfferDTOToCreate();
+        final CreateOfferRequestDTO offerDTO = prepareOfferDTOToCreate();
         final Offer expectedOffer = prepareOffers().getFirst();
         final Long clientId = 1L;
 
         // WHEN
         when(offerRepository.save(any(Offer.class))).thenReturn(expectedOffer);
 
-        OfferDTO result = offerService.createOffer(offerDTO, clientId);
+        OfferResponseDTO result = offerService.createOffer(offerDTO);
 
         // THEN
         assertAll("Verify returned DTO offer",
@@ -113,9 +111,7 @@ class OfferServiceTest {
                 () -> assertEquals(offerDTO.getMillage(), result.getMillage()),
                 () -> assertEquals(offerDTO.getEngineCapacity(), result.getEngineCapacity()),
                 () -> assertEquals(offerDTO.getDescription(), result.getDescription()),
-                () -> assertEquals(offerDTO.getPrice(), result.getPrice()),
-                () -> assertEquals(offerDTO.getCreateDate(), result.getCreateDate()),
-                () -> assertEquals(offerDTO.getStatus(), result.getStatus())
+                () -> assertEquals(offerDTO.getPrice(), result.getPrice())
         );
     }
 
@@ -124,25 +120,22 @@ class OfferServiceTest {
         // GIVEN
         final Long existingId = 1L;
         final Offer offer = prepareOffers().getFirst();
-        final OfferDTO updatedOfferDTO = prepareOfferDTOToUpdate();
+        final UpdateOfferRequestDTO updatedOfferDTO = prepareOfferDTOToUpdate();
 
         // WHEN
         when(offerRepository.findById(existingId)).thenReturn(Optional.of(offer));
-        when(offerRepository.save(any(Offer.class))).thenReturn(OfferMapper.INSTANCE.offerDTOToOffer(updatedOfferDTO));
+        when(offerRepository.save(any(Offer.class))).thenReturn(OfferMapper.INSTANCE.map(updatedOfferDTO));
 
-        OfferDTO result = offerService.updateOffer(updatedOfferDTO);
+        OfferResponseDTO result = offerService.updateOffer(existingId, updatedOfferDTO);
 
         // THEN
         assertAll("Verify returned updated DTO offer",
-                () -> assertEquals(updatedOfferDTO.getId(), result.getId()),
                 () -> assertEquals(updatedOfferDTO.getMark(), result.getMark()),
                 () -> assertEquals(updatedOfferDTO.getProductionYear(), result.getProductionYear()),
                 () -> assertEquals(updatedOfferDTO.getMillage(), result.getMillage()),
                 () -> assertEquals(updatedOfferDTO.getEngineCapacity(), result.getEngineCapacity()),
                 () -> assertEquals(updatedOfferDTO.getDescription(), result.getDescription()),
-                () -> assertEquals(updatedOfferDTO.getPrice(), result.getPrice()),
-                () -> assertEquals(updatedOfferDTO.getCreateDate(), result.getCreateDate()),
-                () -> assertEquals(updatedOfferDTO.getStatus(), result.getStatus())
+                () -> assertEquals(updatedOfferDTO.getPrice(), result.getPrice())
         );
     }
 
@@ -161,19 +154,11 @@ class OfferServiceTest {
                 }
         );
 
-        OfferDTO result = offerService.archiveOffer(existingId);
+        OfferIdResponseDTO result = offerService.archiveOffer(existingId);
 
         // THEN
         assertAll("Verify returned DTO offer with changed status to ARCHIVE",
-                () -> assertEquals(offer.getId(), result.getId()),
-                () -> assertEquals(offer.getMark(), result.getMark()),
-                () -> assertEquals(offer.getProductionYear(), result.getProductionYear()),
-                () -> assertEquals(offer.getMillage(), result.getMillage()),
-                () -> assertEquals(offer.getEngineCapacity(), result.getEngineCapacity()),
-                () -> assertEquals(offer.getDescription(), result.getDescription()),
-                () -> assertEquals(offer.getPrice(), result.getPrice()),
-                () -> assertEquals(offer.getCreateDate(), result.getCreateDate()),
-                () -> assertEquals(result.getStatus(), OfferStatus.ARCHIVE)
+                () -> assertEquals(offer.getId(), result.getId())
         );
     }
 
@@ -185,30 +170,25 @@ class OfferServiceTest {
         );
     }
 
-    private static OfferDTO prepareOfferDTOToCreate() {
-        return OfferDTO.builder()
+    private static CreateOfferRequestDTO prepareOfferDTOToCreate() {
+        return CreateOfferRequestDTO.builder()
                 .productionYear(2010L)
                 .mark("Mark1")
                 .millage(100000L)
                 .engineCapacity(2.0)
                 .description("Description1")
                 .price(10000.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
                 .build();
     }
 
-    private static OfferDTO prepareOfferDTOToUpdate() {
-        return OfferDTO.builder()
-                .id(1L)
+    private static UpdateOfferRequestDTO prepareOfferDTOToUpdate() {
+        return UpdateOfferRequestDTO.builder()
                 .productionYear(2013L)
                 .mark("Mark4")
                 .millage(100003L)
                 .engineCapacity(2.3)
                 .description("Description4")
                 .price(10003.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
                 .build();
     }
 }

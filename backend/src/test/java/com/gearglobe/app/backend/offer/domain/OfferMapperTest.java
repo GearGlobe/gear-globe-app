@@ -1,7 +1,8 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
+import com.gearglobe.dto.OfferResponseDTO;
+import com.gearglobe.dto.OfferStatusDTO;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ class OfferMapperTest {
         offer.setStatus(OfferStatus.ARCHIVE);
 
         // When
-        OfferDTO offerDTO = OfferMapper.INSTANCE.offerToOfferDTO(offer);
+        OfferResponseDTO offerDTO = OfferMapper.INSTANCE.map(offer);
 
         // Then
         assertAll("Verify mapping properties to OfferDTO",
@@ -43,7 +44,7 @@ class OfferMapperTest {
     @Test
     void testOfferDTOToOffer() {
         // Given
-        OfferDTO offerDTO = OfferDTO.builder()
+        OfferResponseDTO offerDTO = OfferResponseDTO.builder()
                 .description("Sample Description DTO")
                 .price(88.88)
                 .mark("Sample Mark DTO")
@@ -51,11 +52,11 @@ class OfferMapperTest {
                 .millage(2000L)
                 .engineCapacity(2.0)
                 .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
+                .status(OfferStatusDTO.ACTIVE)
                 .build();
 
         // When
-        Offer offer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
+        Offer offer = OfferMapper.INSTANCE.map(offerDTO);
 
         // Then
         assertAll("Verify mapping properties to Offer",

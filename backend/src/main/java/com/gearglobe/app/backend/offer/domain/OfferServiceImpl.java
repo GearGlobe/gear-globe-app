@@ -1,14 +1,15 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
 import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
+import com.gearglobe.dto.CreateOfferRequestDTO;
+import com.gearglobe.dto.OfferIdResponseDTO;
+import com.gearglobe.dto.OfferResponseDTO;
+import com.gearglobe.dto.UpdateOfferRequestDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,56 +17,47 @@ class OfferServiceImpl implements OfferService {
     private final OfferRepository offerRepository;
 
     @Override
-    public List<OfferDTO> getAllOffers() {
+    public List<OfferResponseDTO> getAllOffers() {
         return offerRepository.findAll()
                 .stream()
-                .map(OfferMapper.INSTANCE::offerToOfferDTO)
-                .collect(Collectors.toList());
+                .map(OfferMapper.INSTANCE::map)
+                .toList();
     }
 
     @Override
-    public Optional<OfferDTO> getOfferById(Long id) {
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
-
-        if (optionalOffer.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
-        return optionalOffer.map(OfferMapper.INSTANCE::offerToOfferDTO);
+    public OfferResponseDTO getOfferById(Long id) {
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Offer not found with id: " + id));
+        return OfferMapper.INSTANCE.map(offer);
     }
 
     @Override
-    public OfferDTO createOffer(OfferDTO offerDTO, Long clientId) {
-        Offer offer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
-        offer.setClientId(clientId);
+    public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
+        Offer offer = OfferMapper.INSTANCE.map(createOfferRequestDTO);
         Offer saveOffer = offerRepository.save(offer);
-        return OfferMapper.INSTANCE.offerToOfferDTO(saveOffer);
+        return OfferMapper.INSTANCE.map(saveOffer);
     }
 
     @Override
-    public OfferDTO updateOffer(OfferDTO offerDTO) {
-        return offerRepository.findById(offerDTO.getId())
+    public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) {
+        return offerRepository.findById(id)
                 .map(offer -> {
-                    Offer newOffer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
+                    Offer newOffer = OfferMapper.INSTANCE.map(updateOfferRequestDTO);
                     newOffer.setId(offer.getId());
                     return offerRepository.save(newOffer);
                 })
-                .map(OfferMapper.INSTANCE::offerToOfferDTO)
-                .orElseThrow(() -> new EntityNotFoundException("test"));
+                .map(OfferMapper.INSTANCE::map)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public OfferDTO archiveOffer(Long id) {
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
-
-        return optionalOffer.map(offer -> {
-            if (offer.getStatus() != OfferStatus.ARCHIVE) {
-                offer.setStatus(OfferStatus.ARCHIVE);
-                Offer archiveOffer = offerRepository.save(offer);
-                return OfferMapper.INSTANCE.offerToOfferDTO(archiveOffer);
-            }
-
-            return OfferMapper.INSTANCE.offerToOfferDTO(offer);
-        }).orElseThrow(EntityNotFoundException::new);
+    public OfferIdResponseDTO archiveOffer(Long id) {
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Offer not found."));
+        if (offer.getStatus() != OfferStatus.ARCHIVE) {
+            offer.setStatus(OfferStatus.ARCHIVE);
+            offerRepository.save(offer);
+        }
+        return OfferIdResponseDTO.builder().id(id).build();
     }
 }

@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: Gear Globe API
+  description: Gear Globe API
+  version: 1.0.0
+tags:
+  - name: Offer
+    description: Offer API
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /api/offers:
+    get:
+      tags:
+        - Offer
+      summary: Get all offers
+      description: Test 123
+      operationId: getAllOffers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfferResponse'
+    post:
+      tags:
+        - Offer
+      summary: Create offer
+      operationId: createOffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOfferRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/offers/{id}:
+    get:
+      tags:
+        - Offer
+      summary: Get offer by ID
+      operationId: getOfferById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+    put:
+      tags:
+        - Offer
+      summary: Update offer by ID
+      operationId: updateOfferById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOfferRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Offer
+      summary: Archive offer by ID
+      operationId: archiveOfferById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferIdResponse'
+
+components:
+  schemas:
+    OfferResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        mark:
+          type: string
+        productionYear:
+          type: integer
+          format: int64
+        millage:
+          type: integer
+          format: int64
+        engineCapacity:
+          type: number
+          format: double
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+        createDate:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/OfferStatus'
+    OfferStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+    OfferIdResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+    CreateOfferRequest:
+      type: object
+      required:
+        - mark
+        - productionYear
+        - millage
+        - engineCapacity
+        - description
+        - price
+      properties:
+        mark:
+          type: string
+        productionYear:
+          type: integer
+          format: int64
+        millage:
+          type: integer
+          format: int64
+        engineCapacity:
+          type: number
+          format: double
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+    UpdateOfferRequest:
+      type: object
+      properties:
+        mark:
+          type: string
+        productionYear:
+          type: integer
+          format: int64
+        millage:
+          type: integer
+          format: int64
+        engineCapacity:
+          type: number
+          format: double
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
