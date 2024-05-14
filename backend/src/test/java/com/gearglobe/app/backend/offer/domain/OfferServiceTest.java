@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
 import com.gearglobe.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -149,7 +148,7 @@ class OfferServiceTest {
         when(offerRepository.findById(existingId)).thenReturn(Optional.of(offer));
         when(offerRepository.save(any(Offer.class))).thenAnswer(
                 invocation -> {
-                    offer.setStatus(OfferStatus.ARCHIVE);
+                    offer.setStatus(OfferStatusDTO.ARCHIVE);
                     return offer;
                 }
         );
@@ -164,9 +163,9 @@ class OfferServiceTest {
 
     private static List<Offer> prepareOffers() {
         return List.of(
-                new Offer(1L, "Mark1", 2010L, 100000L, 2.0, "Description1", 10000.0, LocalDateTime.now(), OfferStatus.ACTIVE, 1L),
-                new Offer(2L, "Mark2", 2011L, 100001L, 2.1, "Description2", 10001.0, LocalDateTime.now(), OfferStatus.ACTIVE, 2L),
-                new Offer(3L, "Mark3", 2012L, 100002L, 2.2, "Description3", 10002.0, LocalDateTime.now(), OfferStatus.ACTIVE, 3L)
+                new Offer(1L, "Mark1", 2010L, 100000L, 2.0, "Description1", 10000.0, LocalDateTime.now(), OfferStatusDTO.ACTIVE, 1L),
+                new Offer(2L, "Mark2", 2011L, 100001L, 2.1, "Description2", 10001.0, LocalDateTime.now(), OfferStatusDTO.ACTIVE, 2L),
+                new Offer(3L, "Mark3", 2012L, 100002L, 2.2, "Description3", 10002.0, LocalDateTime.now(), OfferStatusDTO.ACTIVE, 3L)
         );
     }
 

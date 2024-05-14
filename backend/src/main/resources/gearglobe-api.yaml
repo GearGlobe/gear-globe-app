@@ -15,7 +15,6 @@ paths:
       tags:
         - Offer
       summary: Get all offers
-      description: Test 123
       operationId: getAllOffers
       responses:
         '200':
@@ -154,7 +153,7 @@ components:
       type: string
       enum:
         - ACTIVE
-        - INACTIVE
+        - ARCHIVE
     OfferIdResponse:
       type: object
       properties:

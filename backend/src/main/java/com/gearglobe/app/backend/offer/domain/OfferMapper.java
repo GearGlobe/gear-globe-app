@@ -10,17 +10,20 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 interface OfferMapper {
     OfferMapper INSTANCE = Mappers.getMapper(OfferMapper.class);
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createDate", ignore = true)
-    @Mapping(target = "status", ignore = true)
     OfferResponseDTO map(Offer offer);
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createDate", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "clientId", ignore = true)
     Offer map(OfferResponseDTO offerDTO);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createDate", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "clientId", ignore = true)
     Offer map(CreateOfferRequestDTO createOfferRequestDTO);
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createDate", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "clientId", ignore = true)
     Offer map(UpdateOfferRequestDTO updateOfferRequestDTO);
 }

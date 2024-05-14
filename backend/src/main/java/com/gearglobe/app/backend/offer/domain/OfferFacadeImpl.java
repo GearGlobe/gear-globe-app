@@ -4,7 +4,6 @@ import com.gearglobe.dto.CreateOfferRequestDTO;
 import com.gearglobe.dto.OfferIdResponseDTO;
 import com.gearglobe.dto.OfferResponseDTO;
 import com.gearglobe.dto.UpdateOfferRequestDTO;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -30,7 +29,7 @@ public class OfferFacadeImpl implements OfferFacade{
     }
 
     @Override
-    public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) throws EntityNotFoundException {
+    public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) {
         return offerService.updateOffer(id, updateOfferRequestDTO);
     }
 

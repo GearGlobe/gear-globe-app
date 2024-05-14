@@ -1,6 +1,5 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
 import com.gearglobe.dto.OfferResponseDTO;
 import com.gearglobe.dto.OfferStatusDTO;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ class OfferMapperTest {
 
     @Test
     void testOfferToOfferDTO() {
-        // Given
+        // GIVEN
         Offer offer = new Offer();
         offer.setId(1L);
         offer.setDescription("Sample Description");
@@ -23,12 +22,12 @@ class OfferMapperTest {
         offer.setMillage(1000L);
         offer.setEngineCapacity(1.6);
         offer.setCreateDate(LocalDateTime.now());
-        offer.setStatus(OfferStatus.ARCHIVE);
+        offer.setStatus(OfferStatusDTO.ARCHIVE);
 
-        // When
+        // WHEN
         OfferResponseDTO offerDTO = OfferMapper.INSTANCE.map(offer);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to OfferDTO",
                 () -> assertEquals(offer.getId(), offerDTO.getId()),
                 () -> assertEquals(offer.getDescription(), offerDTO.getDescription()),
@@ -43,7 +42,7 @@ class OfferMapperTest {
 
     @Test
     void testOfferDTOToOffer() {
-        // Given
+        // GIVEN
         OfferResponseDTO offerDTO = OfferResponseDTO.builder()
                 .description("Sample Description DTO")
                 .price(88.88)
@@ -55,18 +54,16 @@ class OfferMapperTest {
                 .status(OfferStatusDTO.ACTIVE)
                 .build();
 
-        // When
+        // WHEN
         Offer offer = OfferMapper.INSTANCE.map(offerDTO);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to Offer",
                 () -> assertEquals(offerDTO.getDescription(), offer.getDescription()),
                 () -> assertEquals(offerDTO.getPrice(), offer.getPrice()),
                 () -> assertEquals(offerDTO.getMark(), offer.getMark()),
                 () -> assertEquals(offerDTO.getProductionYear(), offer.getProductionYear()),
                 () -> assertEquals(offerDTO.getMillage(), offer.getMillage()),
-                () -> assertEquals(offerDTO.getEngineCapacity(), offer.getEngineCapacity()),
-                () -> assertEquals(offerDTO.getCreateDate(), offer.getCreateDate()),
-                () -> assertEquals(offerDTO.getStatus(), offer.getStatus()));
+                () -> assertEquals(offerDTO.getEngineCapacity(), offer.getEngineCapacity()));
     }
 }

@@ -1,11 +1,14 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
+import com.gearglobe.dto.OfferStatusDTO;
+import com.gearglobe.dto.UpdateOfferRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
 import java.time.LocalDateTime;
 
@@ -15,6 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Setter
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "offer")
 class Offer {
     @Id
@@ -42,13 +46,23 @@ class Offer {
 
     @NonNull
     @Column(name = "create_date")
+    @CreatedDate
     private LocalDateTime createDate;
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    private OfferStatus status;
+    private OfferStatusDTO status;
 
     @NonNull
     @Column(name = "client_id")
     private Long clientId;
+
+    public void updateOffer(UpdateOfferRequestDTO updateOfferRequestDTO) {
+        this.mark = updateOfferRequestDTO.getMark();
+        this.productionYear= updateOfferRequestDTO.getProductionYear();
+        this.millage = updateOfferRequestDTO.getMillage();
+        this.engineCapacity = updateOfferRequestDTO.getEngineCapacity();
+        this.description = updateOfferRequestDTO.getDescription();
+        this.price = updateOfferRequestDTO.getPrice();
+    }
 }

@@ -15,7 +15,7 @@ public class ClientMapperTest {
 
     @Test
     void testClientToClientResponseDTO() {
-        // Given
+        // GIVEN
         Client client = Client.builder()
                 .id(1L)
                 .name("Sample First Name")
@@ -31,10 +31,10 @@ public class ClientMapperTest {
                 .status(ClientStatus.ACTIVE)
                 .build();
 
-        // When
+        // WHEN
         ClientResponseDTO clientResponseDTO = ClientMapper.INSTANCE.map(client);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to ClientResponseDTO",
                 () -> assertEquals(client.getName(), clientResponseDTO.getName()),
                 () -> assertEquals(client.getLastName(), clientResponseDTO.getLastName()),
@@ -48,7 +48,7 @@ public class ClientMapperTest {
 
     @Test
     void testClientRequestDTOToClient() {
-        // Given
+        // GIVEN
         ClientRequestDTO clientRequestDTO = ClientRequestDTO.builder()
                 .name("Sample First Name DTO")
                 .lastName("Sample Last Name DTO")
@@ -66,10 +66,10 @@ public class ClientMapperTest {
                 .password("samplePassword")
                 .build();
 
-        // When
+        // WHEN
         Client client = ClientMapper.INSTANCE.map(clientRequestDTO);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to Client",
                 () -> assertEquals(clientRequestDTO.getName(), client.getName()),
                 () -> assertEquals(clientRequestDTO.getLastName(), client.getLastName()),
@@ -84,7 +84,7 @@ public class ClientMapperTest {
 
     @Test
     void testClientRequestUpdateDTOToClient() {
-        // Given
+        // GIVEN
         ClientRequestUpdateDTO clientRequestUpdateDTO = ClientRequestUpdateDTO.builder()
                 .name("Sample First Name DTO")
                 .lastName("Sample Last Name DTO")
@@ -93,10 +93,10 @@ public class ClientMapperTest {
                 .email("sample.email@gmail.com")
                 .phoneNumber("123456789")
                 .build();
-        // When
+        // WHEN
         Client client = ClientMapper.INSTANCE.map(clientRequestUpdateDTO);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to Client",
                 () -> assertEquals(clientRequestUpdateDTO.getName(), client.getName()),
                 () -> assertEquals(clientRequestUpdateDTO.getLastName(), client.getLastName()),
