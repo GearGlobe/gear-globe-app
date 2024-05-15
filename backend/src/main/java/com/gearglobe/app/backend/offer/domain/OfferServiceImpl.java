@@ -1,7 +1,7 @@
 package com.gearglobe.app.backend.offer.domain;
 
+import com.gearglobe.app.backend.configuration.exception.OfferNotFoundException;
 import com.gearglobe.dto.*;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,24 +22,20 @@ class OfferServiceImpl implements OfferService {
 
     @Override
     public OfferResponseDTO getOfferById(Long id) {
-        Offer offer = offerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Offer not found with id: " + id));
+        Offer offer = findOfferById(id);
         return OfferMapper.INSTANCE.map(offer);
     }
 
     @Override
     public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
-        Offer offer = OfferMapper.INSTANCE.map(createOfferRequestDTO);
-        offer.setStatus(OfferStatusDTO.ACTIVE);
-        offer.setClientId(666L); //TODO
-        Offer saveOffer = offerRepository.save(offer);
-        return OfferMapper.INSTANCE.map(saveOffer);
+        Long clientId = 666L; //TODO: Add the ID of the logged-in client
+        Offer offer = offerRepository.save(Offer.createOffer(createOfferRequestDTO, clientId));
+        return OfferMapper.INSTANCE.map(offer);
     }
 
     @Override
     public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) {
-        Offer offer = offerRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+        Offer offer = findOfferById(id);
         offer.updateOffer(updateOfferRequestDTO);
         offerRepository.save(offer);
         return OfferMapper.INSTANCE.map(offer);
@@ -47,12 +43,16 @@ class OfferServiceImpl implements OfferService {
 
     @Override
     public OfferIdResponseDTO archiveOffer(Long id) {
-        Offer offer = offerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Offer not found."));
-        if (offer.getStatus() != OfferStatusDTO.ARCHIVE) {
-            offer.setStatus(OfferStatusDTO.ARCHIVE);
+        Offer offer = findOfferById(id);
+        if (offer.isActiveOffer()) {
+            offer.archiveOffer();
             offerRepository.save(offer);
         }
         return OfferIdResponseDTO.builder().id(id).build();
+    }
+
+    private Offer findOfferById(Long id) {
+        return offerRepository.findById(id)
+                .orElseThrow(() -> new OfferNotFoundException("Offer not found with id: " + id));
     }
 }

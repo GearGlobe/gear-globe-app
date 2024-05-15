@@ -13,16 +13,18 @@ class OfferMapperTest {
     @Test
     void testOfferToOfferDTO() {
         // GIVEN
-        Offer offer = new Offer();
-        offer.setId(1L);
-        offer.setDescription("Sample Description");
-        offer.setPrice(99.99);
-        offer.setMark("Sample Mark");
-        offer.setProductionYear(2020L);
-        offer.setMillage(1000L);
-        offer.setEngineCapacity(1.6);
-        offer.setCreateDate(LocalDateTime.now());
-        offer.setStatus(OfferStatusDTO.ARCHIVE);
+        Offer offer = Offer.builder()
+                .id(1L)
+                .description("Sample Description")
+                .price(99.99)
+                .mark("Sample Mark")
+                .productionYear(2020L)
+                .millage(1000L)
+                .engineCapacity(1.6)
+                .createDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
+                .status(OfferStatusDTO.ARCHIVE)
+                .build();
 
         // WHEN
         OfferResponseDTO offerDTO = OfferMapper.INSTANCE.map(offer);
@@ -37,6 +39,7 @@ class OfferMapperTest {
                 () -> assertEquals(offer.getMillage(), offerDTO.getMillage()),
                 () -> assertEquals(offer.getEngineCapacity(), offerDTO.getEngineCapacity()),
                 () -> assertEquals(offer.getCreateDate(), offerDTO.getCreateDate()),
+                () -> assertEquals(offer.getModifiedDate(), offerDTO.getModifiedDate()),
                 () -> assertEquals(offer.getStatus(), offerDTO.getStatus()));
     }
 
@@ -50,8 +53,6 @@ class OfferMapperTest {
                 .productionYear(2021L)
                 .millage(2000L)
                 .engineCapacity(2.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatusDTO.ACTIVE)
                 .build();
 
         // WHEN

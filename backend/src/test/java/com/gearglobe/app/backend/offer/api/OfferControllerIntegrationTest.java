@@ -112,8 +112,6 @@ class OfferControllerIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
 
         OfferResponseDTO offer = objectMapper.readValue(response, OfferResponseDTO.class);
-        System.out.println(offer);
-        System.out.println(offer.getStatus());
 
         assertAll("Should return archived offer values",
                 () -> assertEquals(1, offer.getId())

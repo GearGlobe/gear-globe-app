@@ -69,6 +69,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OfferResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     put:
       tags:
         - Offer
@@ -100,6 +106,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       tags:
         - Offer
@@ -119,6 +131,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OfferIdResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -145,6 +163,9 @@ components:
           type: number
           format: double
         createDate:
+          type: string
+          format: date-time
+        modifiedDate:
           type: string
           format: date-time
         status:
@@ -208,5 +229,12 @@ components:
     ErrorResponse:
       type: object
       properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
         message:
           type: string
