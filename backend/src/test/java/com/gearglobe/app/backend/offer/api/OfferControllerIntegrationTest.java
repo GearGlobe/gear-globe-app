@@ -2,9 +2,8 @@ package com.gearglobe.app.backend.offer.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
-import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
 import com.gearglobe.dto.OfferResponseDTO;
+import com.gearglobe.dto.OfferStatusDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,7 +34,7 @@ class OfferControllerIntegrationTest {
     void shouldReturnAllOffers() throws Exception {
         String response = mockMvc.perform(get(OfferController.OFFER_URL))
                 .andReturn().getResponse().getContentAsString();
-        List<OfferDTO> offers = objectMapper.readValue(response, new TypeReference<>() {});
+        List<OfferResponseDTO> offers = objectMapper.readValue(response, new TypeReference<>() {});
 
         assertEquals(3, offers.size());
     }
@@ -45,7 +44,7 @@ class OfferControllerIntegrationTest {
         String response = mockMvc.perform(get(OfferController.OFFER_URL + "/1"))
                 .andReturn().getResponse().getContentAsString();
 
-        OfferDTO offer = objectMapper.readValue(response, OfferDTO.class);
+        OfferResponseDTO offer = objectMapper.readValue(response, OfferResponseDTO.class);
 
         assertEquals(1, offer.getId());
     }
@@ -53,7 +52,7 @@ class OfferControllerIntegrationTest {
     @Test
     @Transactional
     void shouldCreateOffer() throws Exception {
-        OfferDTO testeeOffer = OfferDTO.builder()
+        OfferResponseDTO testeeOffer = OfferResponseDTO.builder()
                 .mark("Mark4")
                 .productionYear(2010L)
                 .millage(100000L)
@@ -61,7 +60,7 @@ class OfferControllerIntegrationTest {
                 .description("Description4")
                 .price(10000.0)
                 .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
+                .status(OfferStatusDTO.ACTIVE)
                 .build();
 
         String response = mockMvc.perform(post(OfferController.OFFER_URL)
@@ -70,7 +69,7 @@ class OfferControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(testeeOffer)))
                 .andReturn().getResponse().getContentAsString();
 
-        OfferDTO offer = objectMapper.readValue(response, OfferDTO.class);
+        OfferResponseDTO offer = objectMapper.readValue(response, OfferResponseDTO.class);
 
         assertEquals(4, offer.getId());
     }
@@ -78,7 +77,7 @@ class OfferControllerIntegrationTest {
     @Test
     @Transactional
     void shouldUpdateOffer() throws Exception {
-        OfferDTO testeeOffer = OfferDTO.builder()
+        OfferResponseDTO testeeOffer = OfferResponseDTO.builder()
                 .id(1L)
                 .mark("MarkUpdated")
                 .productionYear(2020L)
@@ -87,7 +86,7 @@ class OfferControllerIntegrationTest {
                 .description("Description1")
                 .price(20000.0)
                 .createDate(LocalDateTime.parse("2022-01-18T12:00:00"))
-                .status(OfferStatus.ACTIVE)
+                .status(OfferStatusDTO.ACTIVE)
                 .build();
 
         String response = mockMvc.perform(put(OfferController.OFFER_URL + "/1")
@@ -95,7 +94,7 @@ class OfferControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(testeeOffer)))
                 .andReturn().getResponse().getContentAsString();
 
-        OfferDTO offer = objectMapper.readValue(response, OfferDTO.class);
+        OfferResponseDTO offer = objectMapper.readValue(response, OfferResponseDTO.class);
 
         assertAll("Should return updated offer values",
                 () -> assertEquals(1, offer.getId()),
