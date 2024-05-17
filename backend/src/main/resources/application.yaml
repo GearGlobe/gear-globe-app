@@ -13,3 +13,13 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: database/changelog.sql
+  main:
+    allow-bean-definition-overriding: true
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui

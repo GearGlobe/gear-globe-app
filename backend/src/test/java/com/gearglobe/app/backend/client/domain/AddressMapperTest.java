@@ -10,7 +10,7 @@ public class AddressMapperTest {
 
     @Test
     void testAddressToAddressResponseDTO() {
-        // Given
+        // GIVEN
         Address address = new Address();
         address.setId(1L);
         address.setCity("Sample City");
@@ -19,10 +19,10 @@ public class AddressMapperTest {
         address.setApartmentNumber("Sample Apartment Number");
         address.setCountry("Sample Country");
 
-        // When
+        // WHEN
         AddressResponseDTO addressRequestDTO = AddressMapper.INSTANCE.map(address);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to AddressDTO",
                 () -> assertEquals(address.getId(), addressRequestDTO.getId()),
                 () -> assertEquals(address.getCity(), addressRequestDTO.getCity()),
@@ -34,7 +34,7 @@ public class AddressMapperTest {
 
     @Test
     void testAddressRequestDTOToAddress() {
-        // Given
+        // GIVEN
         AddressRequestDTO addressRequestDTO = AddressRequestDTO.builder()
                 .city("Sample City DTO")
                 .street("Sample Street DTO")
@@ -43,10 +43,10 @@ public class AddressMapperTest {
                 .country("Sample Country DTO")
                 .build();
 
-        // When
+        // WHEN
         Address address = AddressMapper.INSTANCE.map(addressRequestDTO);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to Address",
                 () -> assertEquals(addressRequestDTO.getCity(), address.getCity()),
                 () -> assertEquals(addressRequestDTO.getStreet(), address.getStreet()),

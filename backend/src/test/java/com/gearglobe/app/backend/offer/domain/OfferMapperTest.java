@@ -1,7 +1,7 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
-import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
+import com.gearglobe.dto.OfferResponseDTO;
+import com.gearglobe.dto.OfferStatusDTO;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -12,22 +12,24 @@ class OfferMapperTest {
 
     @Test
     void testOfferToOfferDTO() {
-        // Given
-        Offer offer = new Offer();
-        offer.setId(1L);
-        offer.setDescription("Sample Description");
-        offer.setPrice(99.99);
-        offer.setMark("Sample Mark");
-        offer.setProductionYear(2020L);
-        offer.setMillage(1000L);
-        offer.setEngineCapacity(1.6);
-        offer.setCreateDate(LocalDateTime.now());
-        offer.setStatus(OfferStatus.ARCHIVE);
+        // GIVEN
+        Offer offer = Offer.builder()
+                .id(1L)
+                .description("Sample Description")
+                .price(99.99)
+                .mark("Sample Mark")
+                .productionYear(2020L)
+                .millage(1000L)
+                .engineCapacity(1.6)
+                .createDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
+                .status(OfferStatusDTO.ARCHIVE)
+                .build();
 
-        // When
-        OfferDTO offerDTO = OfferMapper.INSTANCE.offerToOfferDTO(offer);
+        // WHEN
+        OfferResponseDTO offerDTO = OfferMapper.INSTANCE.map(offer);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to OfferDTO",
                 () -> assertEquals(offer.getId(), offerDTO.getId()),
                 () -> assertEquals(offer.getDescription(), offerDTO.getDescription()),
@@ -37,35 +39,32 @@ class OfferMapperTest {
                 () -> assertEquals(offer.getMillage(), offerDTO.getMillage()),
                 () -> assertEquals(offer.getEngineCapacity(), offerDTO.getEngineCapacity()),
                 () -> assertEquals(offer.getCreateDate(), offerDTO.getCreateDate()),
+                () -> assertEquals(offer.getModifiedDate(), offerDTO.getModifiedDate()),
                 () -> assertEquals(offer.getStatus(), offerDTO.getStatus()));
     }
 
     @Test
     void testOfferDTOToOffer() {
-        // Given
-        OfferDTO offerDTO = OfferDTO.builder()
+        // GIVEN
+        OfferResponseDTO offerDTO = OfferResponseDTO.builder()
                 .description("Sample Description DTO")
                 .price(88.88)
                 .mark("Sample Mark DTO")
                 .productionYear(2021L)
                 .millage(2000L)
                 .engineCapacity(2.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatus.ACTIVE)
                 .build();
 
-        // When
-        Offer offer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
+        // WHEN
+        Offer offer = OfferMapper.INSTANCE.map(offerDTO);
 
-        // Then
+        // THEN
         assertAll("Verify mapping properties to Offer",
                 () -> assertEquals(offerDTO.getDescription(), offer.getDescription()),
                 () -> assertEquals(offerDTO.getPrice(), offer.getPrice()),
                 () -> assertEquals(offerDTO.getMark(), offer.getMark()),
                 () -> assertEquals(offerDTO.getProductionYear(), offer.getProductionYear()),
                 () -> assertEquals(offerDTO.getMillage(), offer.getMillage()),
-                () -> assertEquals(offerDTO.getEngineCapacity(), offer.getEngineCapacity()),
-                () -> assertEquals(offerDTO.getCreateDate(), offer.getCreateDate()),
-                () -> assertEquals(offerDTO.getStatus(), offer.getStatus()));
+                () -> assertEquals(offerDTO.getEngineCapacity(), offer.getEngineCapacity()));
     }
 }

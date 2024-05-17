@@ -1,14 +1,11 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
-import com.gearglobe.app.backend.offer.api.dtos.OfferStatus;
-import jakarta.persistence.EntityNotFoundException;
+import com.gearglobe.app.backend.configuration.exception.OfferNotFoundException;
+import com.gearglobe.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,56 +13,46 @@ class OfferServiceImpl implements OfferService {
     private final OfferRepository offerRepository;
 
     @Override
-    public List<OfferDTO> getAllOffers() {
+    public List<OfferResponseDTO> getAllOffers() {
         return offerRepository.findAll()
                 .stream()
-                .map(OfferMapper.INSTANCE::offerToOfferDTO)
-                .collect(Collectors.toList());
+                .map(OfferMapper.INSTANCE::map)
+                .toList();
     }
 
     @Override
-    public Optional<OfferDTO> getOfferById(Long id) {
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
+    public OfferResponseDTO getOfferById(Long id) {
+        Offer offer = findOfferById(id);
+        return OfferMapper.INSTANCE.map(offer);
+    }
 
-        if (optionalOffer.isEmpty()) {
-            throw new EntityNotFoundException();
+    @Override
+    public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
+        Long clientId = 666L; //TODO: Add the ID of the logged-in client
+        Offer offer = offerRepository.save(Offer.createOffer(createOfferRequestDTO, clientId));
+        return OfferMapper.INSTANCE.map(offer);
+    }
+
+    @Override
+    public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) {
+        Offer offer = findOfferById(id);
+        offer.updateOffer(updateOfferRequestDTO);
+        offerRepository.save(offer);
+        return OfferMapper.INSTANCE.map(offer);
+    }
+
+    @Override
+    public OfferIdResponseDTO archiveOffer(Long id) {
+        Offer offer = findOfferById(id);
+        if (offer.isActiveOffer()) {
+            offer.archiveOffer();
+            offerRepository.save(offer);
         }
-
-        return optionalOffer.map(OfferMapper.INSTANCE::offerToOfferDTO);
+        return OfferIdResponseDTO.builder().id(id).build();
     }
 
-    @Override
-    public OfferDTO createOffer(OfferDTO offerDTO, Long clientId) {
-        Offer offer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
-        offer.setClientId(clientId);
-        Offer saveOffer = offerRepository.save(offer);
-        return OfferMapper.INSTANCE.offerToOfferDTO(saveOffer);
-    }
-
-    @Override
-    public OfferDTO updateOffer(OfferDTO offerDTO) {
-        return offerRepository.findById(offerDTO.getId())
-                .map(offer -> {
-                    Offer newOffer = OfferMapper.INSTANCE.offerDTOToOffer(offerDTO);
-                    newOffer.setId(offer.getId());
-                    return offerRepository.save(newOffer);
-                })
-                .map(OfferMapper.INSTANCE::offerToOfferDTO)
-                .orElseThrow(() -> new EntityNotFoundException("test"));
-    }
-
-    @Override
-    public OfferDTO archiveOffer(Long id) {
-        Optional<Offer> optionalOffer = offerRepository.findById(id);
-
-        return optionalOffer.map(offer -> {
-            if (offer.getStatus() != OfferStatus.ARCHIVE) {
-                offer.setStatus(OfferStatus.ARCHIVE);
-                Offer archiveOffer = offerRepository.save(offer);
-                return OfferMapper.INSTANCE.offerToOfferDTO(archiveOffer);
-            }
-
-            return OfferMapper.INSTANCE.offerToOfferDTO(offer);
-        }).orElseThrow(EntityNotFoundException::new);
+    private Offer findOfferById(Long id) {
+        return offerRepository.findById(id)
+                .orElseThrow(() -> new OfferNotFoundException("Offer not found with id: " + id));
     }
 }

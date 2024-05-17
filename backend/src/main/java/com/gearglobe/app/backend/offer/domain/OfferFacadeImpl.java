@@ -1,11 +1,12 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.app.backend.offer.api.dtos.OfferDTO;
-import jakarta.persistence.EntityNotFoundException;
+import com.gearglobe.dto.CreateOfferRequestDTO;
+import com.gearglobe.dto.OfferIdResponseDTO;
+import com.gearglobe.dto.OfferResponseDTO;
+import com.gearglobe.dto.UpdateOfferRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -13,27 +14,27 @@ public class OfferFacadeImpl implements OfferFacade{
     private final OfferService offerService;
 
     @Override
-    public List<OfferDTO> getAllOffers() {
+    public List<OfferResponseDTO> getAllOffers() {
         return offerService.getAllOffers();
     }
 
     @Override
-    public Optional<OfferDTO> getOfferById(Long id) {
+    public OfferResponseDTO getOfferById(Long id) {
         return offerService.getOfferById(id);
     }
 
     @Override
-    public OfferDTO createOffer(OfferDTO offerDTO, Long clientId) {
-        return offerService.createOffer(offerDTO, clientId);
+    public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
+        return offerService.createOffer(createOfferRequestDTO);
     }
 
     @Override
-    public OfferDTO updateOffer(OfferDTO offerDTO) throws EntityNotFoundException {
-        return offerService.updateOffer(offerDTO);
+    public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) {
+        return offerService.updateOffer(id, updateOfferRequestDTO);
     }
 
     @Override
-    public OfferDTO archiveOffer(Long id) throws EntityNotFoundException {
+    public OfferIdResponseDTO archiveOffer(Long id) {
         return offerService.archiveOffer(id);
     }
 }
