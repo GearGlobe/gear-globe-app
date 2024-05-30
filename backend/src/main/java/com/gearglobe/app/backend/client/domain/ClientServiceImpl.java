@@ -1,21 +1,17 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.*;
-import com.gearglobe.app.backend.client.api.dtos.enums.ClientRole;
-import com.gearglobe.app.backend.client.api.dtos.enums.ClientStatus;
-import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
+import com.gearglobe.dto.*;
 import com.gearglobe.app.backend.configuration.exception.AddressNotFoundException;
 import com.gearglobe.app.backend.configuration.exception.ClientNotFoundException;
 import com.gearglobe.app.backend.configuration.exception.IncorrectClientTypeDataException;
 import com.gearglobe.app.backend.configuration.exception.IncorrectPasswordException;
+import com.gearglobe.dto.ClientIdResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,110 +30,103 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponseDTO getClientById(Long id) {
-        return clientRepository.findById(id)
-                .map(ClientMapper.INSTANCE::map)
-                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
+        Client client = findClientById(id);
+        return ClientMapper.INSTANCE.map(client);
     }
 
     @Override
     @Transactional
-    public ClientResponseDTO createClient(ClientRequestDTO clientDTO) {
-        Client client = ClientMapper.INSTANCE.map(clientDTO);
-        if (isPasswordNotValid(client.getPassword())) {
+    public ClientResponseDTO createClient(CreateClientRequestDTO createClientRequestDTO) {
+        Client clientToCreate = ClientMapper.INSTANCE.map(createClientRequestDTO);
+
+        validateNewPassword(clientToCreate.getPassword());
+        validatePerson(clientToCreate);
+
+        clientToCreate.changePassword(encodePassword(clientToCreate.getPassword()));
+        clientToCreate.setBasicClientData();
+        Client client = clientRepository.save(clientToCreate);
+
+        Address addressToCreate = AddressMapper.INSTANCE.map(createClientRequestDTO.getAddress());
+        Address address = addressRepository.save(addressToCreate);
+
+        client.assignAddress(address);
+        address.assignClient(client);
+        return ClientMapper.INSTANCE.map(client);
+    }
+
+    @Override
+    public ClientResponseDTO updateClient(Long id, UpdateClientRequestDTO updateClientRequestDTO) {
+        Client clientToUpdate = ClientMapper.INSTANCE.map(updateClientRequestDTO);
+
+        validatePerson(clientToUpdate);
+
+        Client client = findClientById(id);
+        client.updateClient(updateClientRequestDTO);
+        clientRepository.save(client);
+        return ClientMapper.INSTANCE.map(client);
+    }
+
+    @Override
+    public AddressResponseDTO updateClientAddress(Long id, UpdateAddressRequestDTO updateAddressRequestDTO) {
+        Address address = findAddressByClientId(id);
+        address.updateAddress(updateAddressRequestDTO);
+        addressRepository.save(address);
+        return AddressMapper.INSTANCE.map(address);
+    }
+
+    @Override
+    public ClientIdResponseDTO changeClientPassword(Long id, String oldPasswordToCheck, String password) {
+        Client client = findClientById(id);
+
+        validateOldPassword(client, oldPasswordToCheck);
+        validateNewPassword(password);
+
+        client.changePassword(encodePassword(password));
+        clientRepository.save(client);
+        return ClientIdResponseDTO.builder().id(id).build();
+    }
+
+    @Override
+    public ClientIdResponseDTO deactivateClient(Long id) {
+        Client client = findClientById(id);
+
+        if (client.isActive()){
+            client.deactivateClient();
+            clientRepository.save(client);
+        }
+
+        return ClientIdResponseDTO.builder().id(id).build();
+    }
+
+    private Client findClientById(Long id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException("Client not found with id: " + id));
+    }
+
+    private Address findAddressByClientId(Long id) {
+        return addressRepository.findByClientId(id)
+                .orElseThrow(() -> new AddressNotFoundException("Address not found for client with id: " + id));
+    }
+
+    private void validateNewPassword(String password) {
+        if (Client.isPasswordNotValid(password)) {
             throw new IncorrectPasswordException("Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character!");
         }
-        client.setPassword(passwordEncoder.encode(client.getPassword()));
-        client.setStatus(ClientStatus.ACTIVE);
-        client.setRole(ClientRole.CLIENT);
+    }
 
-        if (isPersonNotValid(client)) {
+    private void validateOldPassword(Client client, String oldPasswordToCheck) {
+        if (!passwordEncoder.matches(oldPasswordToCheck, client.getPassword())) {
+            throw new IncorrectPasswordException("Old password is incorrect!");
+        }
+    }
+
+    private void validatePerson(Client client) {
+        if (Client.isPersonNotValid(client)) {
             throw new IncorrectClientTypeDataException("Last name and birth date are required for person type!");
         }
-
-        AddressRequestDTO addressRequestDTO = clientDTO.getAddress();
-        Address address = AddressMapper.INSTANCE.map(addressRequestDTO);
-
-        address.setClient(client);
-        Address saveAddress = addressRepository.save(address);
-
-        client.setAddress(saveAddress);
-        Client saveClient = clientRepository.save(client);
-
-        return ClientMapper.INSTANCE.map(saveClient);
     }
 
-    @Override
-    public ClientResponseDTO updateClient(Long id, ClientRequestUpdateDTO clientDTO) {
-        return clientRepository.findById(id)
-                .map(client -> {
-                    Client updatedClient = ClientMapper.INSTANCE.map(clientDTO);
-
-                    if (isPersonNotValid(updatedClient)) {
-                        throw new IncorrectClientTypeDataException("Last name and birth date are required for person type!");
-                    }
-
-                    updatedClient.setId(client.getId());
-                    updatedClient.setAddress(client.getAddress());
-                    updatedClient.setPassword(client.getPassword());
-                    updatedClient.setStatus(client.getStatus());
-                    updatedClient.setRole(client.getRole());
-                    return clientRepository.save(updatedClient);
-                })
-                .map(ClientMapper.INSTANCE::map)
-                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
-    }
-
-    @Override
-    public AddressResponseDTO updateClientAddress(Long id, AddressRequestDTO addressRequestDTO) {
-        return addressRepository.findByClientId(id)
-                .map(address -> {
-                    Address newAddress = AddressMapper.INSTANCE.map(addressRequestDTO);
-                    newAddress.setId(address.getId());
-                    newAddress.setClient(address.getClient());
-                    return addressRepository.save(newAddress);
-                })
-                .map(AddressMapper.INSTANCE::map)
-                .orElseThrow(() -> new AddressNotFoundException("Address not found"));
-    }
-
-    @Override
-    public Long changeClientPassword(Long id, String oldPasswordToCheck, String password) {
-        if (isPasswordNotValid(password)) {
-            throw new IncorrectPasswordException("New password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character!");
-        }
-
-        return clientRepository.findById(id)
-                .map(client -> {
-                    if (!passwordEncoder.matches(oldPasswordToCheck, client.getPassword())) {
-                        throw new IncorrectPasswordException("Old password is incorrect!");
-                    }
-                    client.setPassword(passwordEncoder.encode(password));
-                    clientRepository.save(client);
-                    return client.getId();
-                })
-                .orElseThrow(() -> new ClientNotFoundException("Client not found"));
-    }
-
-    @Override
-    public Long deactivateClient(Long id) {
-        Optional<Client> optionalClient = clientRepository.findById(id);
-
-        return optionalClient.map(client -> {
-            if (client.getStatus() != ClientStatus.INACTIVE) {
-                client.setStatus(ClientStatus.INACTIVE);
-                Client deactivatedClient = clientRepository.save(client);
-                return deactivatedClient.getId();
-            }
-
-            return client.getId();
-        }).orElseThrow(() -> new ClientNotFoundException("Client not found"));
-    }
-
-    private boolean isPersonNotValid(Client client) {
-        return client.getClientType() == ClientType.PERSON && (Objects.isNull(client.getLastName()) || Objects.isNull(client.getBirthDate()));
-    }
-
-    private boolean isPasswordNotValid(String password) {
-        return !password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$)(?=.*[!@#$%^&*/\\\\()\\-_=+]).{8,}$");
+    private String encodePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }
