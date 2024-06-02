@@ -31,9 +31,18 @@ class Address {
     @Column(nullable = false)
     private String country;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "address")
     private Client client;
+
+    public static Address createAddress(CreateAddressRequestDTO createAddressRequestDTO) {
+        return Address.builder()
+                .city(createAddressRequestDTO.getCity())
+                .street(createAddressRequestDTO.getStreet())
+                .houseNumber(createAddressRequestDTO.getHouseNumber())
+                .apartmentNumber(createAddressRequestDTO.getApartmentNumber())
+                .country(createAddressRequestDTO.getCountry())
+                .build();
+    }
 
     public void updateAddress(UpdateAddressRequestDTO updateAddressRequestDTO) {
         this.city = updateAddressRequestDTO.getCity();
@@ -42,9 +51,4 @@ class Address {
         this.apartmentNumber = updateAddressRequestDTO.getApartmentNumber();
         this.country = updateAddressRequestDTO.getCountry();
     }
-
-    public void assignClient(Client client) {
-        this.client = client;
-    }
-
 }

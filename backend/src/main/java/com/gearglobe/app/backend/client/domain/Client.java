@@ -45,7 +45,8 @@ class Client {
     @Column(nullable = false, name = "phone_number")
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "client")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
     @Column(nullable = false)
@@ -75,6 +76,34 @@ class Client {
         return !password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$)(?=.*[!@#$%^&*/\\\\()\\-_=+]).{8,}$");
     }
 
+    public static Client createClient(CreateClientRequestDTO createClientRequestDTO, String encodedPassword) {
+//        Client client = new Client();
+//        client.name = createClientRequestDTO.getName();
+//        client.lastName = createClientRequestDTO.getLastName();
+//        client.clientType = createClientRequestDTO.getClientType();
+//        client.birthDate = createClientRequestDTO.getBirthDate();
+//        client.email = createClientRequestDTO.getEmail();
+//        client.phoneNumber = createClientRequestDTO.getPhoneNumber();
+//        client.password = encodedPassword;
+//        client.role = ClientRoleDTO.CLIENT;
+//        client.status = ClientStatusDTO.ACTIVE;
+//        client.address = Address.createAddress(createClientRequestDTO.getAddress());
+//        return client;
+//
+        return Client.builder()
+                .name(createClientRequestDTO.getName())
+                .lastName(createClientRequestDTO.getLastName())
+                .clientType(createClientRequestDTO.getClientType())
+                .birthDate(createClientRequestDTO.getBirthDate())
+                .email(createClientRequestDTO.getEmail())
+                .phoneNumber(createClientRequestDTO.getPhoneNumber())
+                .password(encodedPassword)
+                .role(ClientRoleDTO.CLIENT)
+                .status(ClientStatusDTO.ACTIVE)
+                .address(Address.createAddress(createClientRequestDTO.getAddress()))
+                .build();
+    }
+
     public void updateClient(UpdateClientRequestDTO updateClientRequestDTO) {
         this.name = updateClientRequestDTO.getName();
         this.lastName = updateClientRequestDTO.getLastName();
@@ -82,15 +111,6 @@ class Client {
         this.birthDate = updateClientRequestDTO.getBirthDate();
         this.email = updateClientRequestDTO.getEmail();
         this.phoneNumber = updateClientRequestDTO.getPhoneNumber();
-    }
-
-    public void setBasicClientData(){
-        this.role = ClientRoleDTO.CLIENT;
-        this.status = ClientStatusDTO.ACTIVE;
-    }
-
-    public void assignAddress(Address address) {
-        this.address = address;
     }
 
     public void deactivateClient() {

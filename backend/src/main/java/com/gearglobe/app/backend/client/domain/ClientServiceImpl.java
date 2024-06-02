@@ -42,15 +42,8 @@ class ClientServiceImpl implements ClientService {
         validateNewPassword(clientToCreate.getPassword());
         validatePerson(clientToCreate);
 
-        clientToCreate.changePassword(encodePassword(clientToCreate.getPassword()));
-        clientToCreate.setBasicClientData();
-        Client client = clientRepository.save(clientToCreate);
-
-        Address addressToCreate = AddressMapper.INSTANCE.map(createClientRequestDTO.getAddress());
-        Address address = addressRepository.save(addressToCreate);
-
-        client.assignAddress(address);
-        address.assignClient(client);
+        String encodedPassword = encodePassword(clientToCreate.getPassword());
+        Client client = clientRepository.save(Client.createClient(createClientRequestDTO, encodedPassword));
         return ClientMapper.INSTANCE.map(client);
     }
 
