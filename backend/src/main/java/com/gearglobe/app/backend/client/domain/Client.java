@@ -77,19 +77,6 @@ class Client {
     }
 
     public static Client createClient(CreateClientRequestDTO createClientRequestDTO, String encodedPassword) {
-//        Client client = new Client();
-//        client.name = createClientRequestDTO.getName();
-//        client.lastName = createClientRequestDTO.getLastName();
-//        client.clientType = createClientRequestDTO.getClientType();
-//        client.birthDate = createClientRequestDTO.getBirthDate();
-//        client.email = createClientRequestDTO.getEmail();
-//        client.phoneNumber = createClientRequestDTO.getPhoneNumber();
-//        client.password = encodedPassword;
-//        client.role = ClientRoleDTO.CLIENT;
-//        client.status = ClientStatusDTO.ACTIVE;
-//        client.address = Address.createAddress(createClientRequestDTO.getAddress());
-//        return client;
-//
         return Client.builder()
                 .name(createClientRequestDTO.getName())
                 .lastName(createClientRequestDTO.getLastName())
@@ -127,5 +114,4 @@ class Client {
     public boolean isActive(){
         return this.status == ClientStatusDTO.ACTIVE;
     }
-
 }

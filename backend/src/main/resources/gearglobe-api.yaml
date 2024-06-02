@@ -191,7 +191,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: bigint64
+            format: int64
       responses:
         '200':
           description: OK
@@ -246,7 +246,7 @@ paths:
       tags:
         - Client
       summary: Deactivate client by ID
-      operationId: deactivateClient
+      operationId: deactivateClientById
       parameters:
         - name: id
           in: path
@@ -271,14 +271,14 @@ paths:
     patch:
       tags:
         - Client
-      summary: Change client's address by ID
-      operationId: changeClientAddress
+      summary: Update client's address by ID
+      operationId: updateClientAddress
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: object
+            type: integer
             format: int64
       requestBody:
         required: true
@@ -292,7 +292,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientResponse'
+                $ref: '#/components/schemas/AddressResponse'
         '400':
           description: Bad Request
           content:
@@ -316,7 +316,7 @@ paths:
           in: path
           required: true
           schema:
-            type: object
+            type: integer
             format: int64
       requestBody:
         required: true
@@ -330,7 +330,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientResponse'
+                $ref: '#/components/schemas/ClientIdResponse'
         '400':
           description: Bad Request
           content:
