@@ -50,41 +50,5 @@ class ClientController implements ClientApi {
     public ResponseEntity<ClientIdResponseDTO> deactivateClientById(Long id) {
         return ResponseEntity.ok(clientFacade.deactivateClient(id));
     }
-
-//
-//    @GetMapping
-//    public List<ClientResponseDTO> getAllClients() {
-//        return clientFacade.getAllClients();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ClientResponseDTO getClientById(@PathVariable Long id) {
-//        return clientFacade.getClientById(id);
-//    }
-//
-//    @PostMapping
-//    public ClientResponseDTO createClient(@Valid @RequestBody CreateClientRequestDTO clientDTO) {
-//        return clientFacade.createClient(clientDTO);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ClientResponseDTO updateClient(@PathVariable Long id , @Valid @RequestBody UpdateClientRequestDTO clientDTO) {
-//        return clientFacade.updateClient(id, clientDTO);
-//    }
-//
-//    @PatchMapping("/{id}/address")
-//    public AddressResponseDTO updateClientAddress(@PathVariable Long id, @Valid @RequestBody UpdateAddressRequestDTO addressRequestDTO) {
-//        return clientFacade.updateClientAddress(id, addressRequestDTO);
-//    }
-//
-//    @PatchMapping("/{id}/password")
-//    public ClientIdResponseDTO changeClientPassword(@PathVariable Long id, @Valid @RequestBody UpdatePasswordRequestDTO passwordDTO){
-//        return clientFacade.changeClientPassword(id, passwordDTO.getOldPassword(), passwordDTO.getNewPassword());
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ClientIdResponseDTO deactivateClient(@PathVariable Long id) {
-//        return clientFacade.deactivateClient(id);
-//    }
 }
 
