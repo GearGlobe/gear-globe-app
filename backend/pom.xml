@@ -177,6 +177,7 @@
                             <configOptions>
                                 <additionalModelTypeAnnotations>
                                     @lombok.Builder
+                                    @lombok.Data
                                 </additionalModelTypeAnnotations>
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>

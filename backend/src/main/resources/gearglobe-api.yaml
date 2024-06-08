@@ -466,9 +466,7 @@ components:
       type: object
       required:
         - name
-        - lastName
         - clientType
-        - birthDate
         - email
         - phoneNumber
         - address
@@ -529,7 +527,6 @@ components:
         - city
         - street
         - houseNumber
-        - apartmentNumber
         - country
       properties:
         city:

@@ -1,18 +1,18 @@
 package com.gearglobe.app.backend.client.domain;
 
 
-import com.gearglobe.app.backend.configuration.exception.IncorrectClientTypeDataException;
 import com.gearglobe.app.backend.configuration.exception.IncorrectPasswordException;
 import com.gearglobe.dto.*;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Builder
@@ -68,14 +68,6 @@ class Client {
     @Enumerated(EnumType.STRING)
     private ClientStatusDTO status;
 
-    public static boolean isPersonNotValid(Client client) {
-        return client.getClientType() == ClientTypeDTO.PERSON && (Objects.isNull(client.getLastName()) || Objects.isNull(client.getBirthDate()));
-    }
-
-    public static boolean isPasswordNotValid(String password) {
-        return !password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$)(?=.*[!@#$%^&*/\\\\()\\-_=+]).{8,}$");
-    }
-
     public static Client createClient(CreateClientRequestDTO createClientRequestDTO, String encodedPassword) {
         return Client.builder()
                 .name(createClientRequestDTO.getName())
@@ -89,6 +81,14 @@ class Client {
                 .status(ClientStatusDTO.ACTIVE)
                 .address(Address.createAddress(createClientRequestDTO.getAddress()))
                 .build();
+    }
+
+    public static boolean isPersonNotValid(Client client) {
+        return client.getClientType() == ClientTypeDTO.PERSON && (StringUtils.isBlank(client.getLastName()) || ObjectUtils.isEmpty(client.getBirthDate()));
+    }
+
+    public static boolean isPasswordNotValid(String password) {
+        return !password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$)(?=.*[!@#$%^&*/\\\\()\\-_=+]).{8,}$");
     }
 
     public void updateClient(UpdateClientRequestDTO updateClientRequestDTO) {
