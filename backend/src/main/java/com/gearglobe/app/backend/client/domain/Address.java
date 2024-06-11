@@ -1,14 +1,16 @@
 package com.gearglobe.app.backend.client.domain;
 
+import com.gearglobe.dto.CreateAddressRequestDTO;
+import com.gearglobe.dto.UpdateAddressRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
 @Table(name = "address")
+@Builder
 class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +31,24 @@ class Address {
     @Column(nullable = false)
     private String country;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "address")
     private Client client;
+
+    public static Address createAddress(CreateAddressRequestDTO createAddressRequestDTO) {
+        return Address.builder()
+                .city(createAddressRequestDTO.getCity())
+                .street(createAddressRequestDTO.getStreet())
+                .houseNumber(createAddressRequestDTO.getHouseNumber())
+                .apartmentNumber(createAddressRequestDTO.getApartmentNumber())
+                .country(createAddressRequestDTO.getCountry())
+                .build();
+    }
+
+    public void updateAddress(UpdateAddressRequestDTO updateAddressRequestDTO) {
+        this.city = updateAddressRequestDTO.getCity();
+        this.street = updateAddressRequestDTO.getStreet();
+        this.houseNumber = updateAddressRequestDTO.getHouseNumber();
+        this.apartmentNumber = updateAddressRequestDTO.getApartmentNumber();
+        this.country = updateAddressRequestDTO.getCountry();
+    }
 }

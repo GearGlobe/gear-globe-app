@@ -1,6 +1,6 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.*;
+import com.gearglobe.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,23 +20,23 @@ public class ClientFacadeImpl implements ClientFacade{
         return clientService.getClientById(id);
     }
 
-    public ClientResponseDTO createClient(ClientRequestDTO clientDTO) {
+    public ClientResponseDTO createClient(CreateClientRequestDTO clientDTO) {
         return clientService.createClient(clientDTO);
     }
 
-    public ClientResponseDTO updateClient(Long id, ClientRequestUpdateDTO clientDTO) throws EntityNotFoundException {
+    public ClientResponseDTO updateClient(Long id, UpdateClientRequestDTO clientDTO) {
         return clientService.updateClient(id, clientDTO);
     }
 
-    public AddressResponseDTO updateClientAddress(Long id, AddressRequestDTO addressRequestDTO) throws EntityNotFoundException {
+    public AddressResponseDTO updateClientAddress(Long id, UpdateAddressRequestDTO addressRequestDTO) {
         return clientService.updateClientAddress(id, addressRequestDTO);
     }
 
-    public Long changeClientPassword(Long id, String oldPasswordToCheck, String password) throws EntityNotFoundException {
+    public ClientIdResponseDTO changeClientPassword(Long id, String oldPasswordToCheck, String password) {
         return clientService.changeClientPassword(id, oldPasswordToCheck, password);
     }
 
-    public Long deactivateClient(Long id) throws EntityNotFoundException {
+    public ClientIdResponseDTO deactivateClient(Long id) throws EntityNotFoundException {
         return clientService.deactivateClient(id);
     }
 }
