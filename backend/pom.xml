@@ -176,8 +176,8 @@
                             </typeMappings>
                             <configOptions>
                                 <additionalModelTypeAnnotations>
-                                    @lombok.Builder
-                                    @lombok.Data
+                                    @lombok.experimental.SuperBuilder
+                                    @lombok.NoArgsConstructor
                                 </additionalModelTypeAnnotations>
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>

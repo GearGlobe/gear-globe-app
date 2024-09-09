@@ -108,7 +108,7 @@ public class ClientControllerIntegrationTests {
     void shouldUpdateClientAddress() throws Exception {
         UpdateAddressRequestDTO testeeAddress = prepareUpdatedAddressDTO();
 
-        String response = mockMvc.perform(patch(ClientController.CLIENT_URL + "/1/address")
+        String response = mockMvc.perform(put(ClientController.CLIENT_URL + "/1/address")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(testeeAddress)))
                 .andReturn().getResponse().getContentAsString();
@@ -159,10 +159,10 @@ public class ClientControllerIntegrationTests {
 
     private CreateClientRequestDTO prepareCreateClientRequestDTO() {
         return CreateClientRequestDTO.builder()
-                .name("Name4")
-                .lastName("LastName4")
+                .name("CreateName")
+                .lastName("CreateLastName")
                 .clientType(ClientTypeDTO.PERSON)
-                .password("Password4!")
+                .password("CreatePassword4!")
                 .phoneNumber("123456789")
                 .birthDate(LocalDate.parse("1990-04-04"))
                 .address(CreateAddressRequestDTO.builder()

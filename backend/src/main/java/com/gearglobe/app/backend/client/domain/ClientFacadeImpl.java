@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ClientFacadeImpl implements ClientFacade{
+class ClientFacadeImpl implements ClientFacade{
     private final ClientService clientService;
 
     public List<ClientResponseDTO> getAllClients() {

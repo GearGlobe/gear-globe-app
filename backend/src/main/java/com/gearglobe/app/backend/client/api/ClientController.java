@@ -14,7 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor
 class ClientController implements ClientApi {
     public static final String CLIENT_URL = "/api/clients";
-    public final ClientFacade clientFacade;
+
+    private final ClientFacade clientFacade;
 
     @Override
     public ResponseEntity<List<ClientResponseDTO>> getAllClients() {

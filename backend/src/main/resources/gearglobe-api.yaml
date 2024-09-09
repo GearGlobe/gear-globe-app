@@ -268,7 +268,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/clients/{id}/address:
-    patch:
+    put:
       tags:
         - Client
       summary: Update client's address by ID
@@ -474,8 +474,10 @@ components:
       properties:
         name:
           type: string
+          pattern: '^[a-zA-Z\p{L}]+([ .-][.a-zA-Z\p{L}]+)*$'
         lastName:
           type: string
+          pattern: '^[a-zA-Z\p{L}]+([ -][a-zA-Z\p{L}]+)*$'
         clientType:
           $ref: '#/components/schemas/ClientType'
         birthDate:
@@ -483,19 +485,28 @@ components:
           format: date
         email:
           type: string
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         phoneNumber:
           type: string
+          pattern: '^\d{9}$'
         address:
           $ref: '#/components/schemas/CreateAddressRequest'
         password:
           type: string
     UpdateClientRequest:
       type: object
+      required:
+        - name
+        - clientType
+        - email
+        - phoneNumber
       properties:
         name:
           type: string
+          pattern: '^[a-zA-Z\p{L}]+([ .-][.a-zA-Z\p{L}]+)*$'
         lastName:
           type: string
+          pattern: '^[a-zA-Z\p{L}]+([ -][a-zA-Z\p{L}]+)*$'
         clientType:
           $ref: '#/components/schemas/ClientType'
         birthDate:
@@ -541,6 +552,11 @@ components:
           type: string
     UpdateAddressRequest:
       type: object
+      required:
+        - city
+        - street
+        - houseNumber
+        - country
       properties:
         city:
           type: string
