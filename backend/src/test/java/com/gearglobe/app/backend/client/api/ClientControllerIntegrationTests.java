@@ -2,8 +2,7 @@ package com.gearglobe.app.backend.client.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gearglobe.app.backend.client.api.dtos.*;
-import com.gearglobe.app.backend.client.api.dtos.enums.ClientType;
+import com.gearglobe.dto.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Sql(scripts = "classpath:/data/insert_clients.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "classpath:/data/insert_addresses.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = "classpath:/data/insert_clients.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public class ClientControllerIntegrationTests {
     @Autowired
     private MockMvc mockMvc;
@@ -58,7 +57,7 @@ public class ClientControllerIntegrationTests {
     @Test
     @Transactional
     void shouldCreateClient() throws Exception {
-        ClientRequestDTO testeeClient = prepareClientRequestDTO();
+        CreateClientRequestDTO testeeClient = prepareCreateClientRequestDTO();
 
         String response = mockMvc.perform(post(ClientController.CLIENT_URL)
                         .contentType("application/json")
@@ -79,13 +78,13 @@ public class ClientControllerIntegrationTests {
                 () -> assertEquals(testeeClient.getAddress().getCountry(), clientResponse.getAddress().getCountry()),
                 () -> assertEquals(testeeClient.getAddress().getHouseNumber(), clientResponse.getAddress().getHouseNumber()),
                 () -> assertEquals(testeeClient.getAddress().getApartmentNumber(), clientResponse.getAddress().getApartmentNumber())
-    );
+        );
     }
 
     @Test
     @Transactional
     void shouldUpdateClient() throws Exception {
-        ClientRequestUpdateDTO testeeClient = prepareClientRequestUpdateDTO();
+        UpdateClientRequestDTO testeeClient = prepareUpdateClientRequestDTO();
 
         String response = mockMvc.perform(put(ClientController.CLIENT_URL + "/1")
                         .contentType("application/json")
@@ -107,14 +106,14 @@ public class ClientControllerIntegrationTests {
     @Test
     @Transactional
     void shouldUpdateClientAddress() throws Exception {
-        AddressRequestDTO testeeAddress = prepareUpdatedAddressDTO();
+        UpdateAddressRequestDTO testeeAddress = prepareUpdatedAddressDTO();
 
-        String response = mockMvc.perform(patch(ClientController.CLIENT_URL + "/1/address")
+        String response = mockMvc.perform(put(ClientController.CLIENT_URL + "/1/address")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(testeeAddress)))
                 .andReturn().getResponse().getContentAsString();
 
-        AddressRequestDTO addressResponse = objectMapper.readValue(response, AddressRequestDTO.class);
+        AddressResponseDTO addressResponse = objectMapper.readValue(response, AddressResponseDTO.class);
 
         assertAll("Should return updated address",
                 () -> assertEquals(testeeAddress.getCity(), addressResponse.getCity()),
@@ -128,7 +127,7 @@ public class ClientControllerIntegrationTests {
     @Test
     @Transactional
     void shouldChangeClientPassword() throws Exception {
-        PasswordRequestUpdateDTO testeePassword = PasswordRequestUpdateDTO.builder()
+        UpdatePasswordRequestDTO testeePassword = UpdatePasswordRequestDTO.builder()
                 .oldPassword("Password1!")
                 .newPassword("newPassword1!")
                 .build();
@@ -138,31 +137,35 @@ public class ClientControllerIntegrationTests {
                         .content(objectMapper.writeValueAsString(testeePassword)))
                 .andReturn().getResponse().getContentAsString();
 
-        Long clientId = objectMapper.readValue(response, Long.class);
+        ClientResponseDTO clientIdResponse = objectMapper.readValue(response, ClientResponseDTO.class);
 
-        assertEquals(1L, clientId);
+        assertAll("Should return client id",
+                () -> assertEquals(1L, clientIdResponse.getId())
+        );
     }
 
     @Test
     @Transactional
-    void shouldDeactivateClient () throws Exception {
+    void shouldDeactivateClient() throws Exception {
         String response = mockMvc.perform(delete(ClientController.CLIENT_URL + "/1"))
                 .andReturn().getResponse().getContentAsString();
 
-        Long clientId = objectMapper.readValue(response, Long.class);
+        ClientResponseDTO clientId = objectMapper.readValue(response, ClientResponseDTO.class);
 
-        assertEquals(1L, clientId);
+        assertAll("Should return client id",
+                () -> assertEquals(1L, clientId.getId())
+        );
     }
 
-    private ClientRequestDTO prepareClientRequestDTO() {
-        return ClientRequestDTO.builder()
-                .name("Name4")
-                .lastName("LastName4")
-                .clientType(ClientType.PERSON)
-                .password("Password4!")
+    private CreateClientRequestDTO prepareCreateClientRequestDTO() {
+        return CreateClientRequestDTO.builder()
+                .name("CreateName")
+                .lastName("CreateLastName")
+                .clientType(ClientTypeDTO.PERSON)
+                .password("CreatePassword4!")
                 .phoneNumber("123456789")
                 .birthDate(LocalDate.parse("1990-04-04"))
-                .address(AddressRequestDTO.builder()
+                .address(CreateAddressRequestDTO.builder()
                         .city("City4")
                         .street("Street4")
                         .country("Country4")
@@ -173,19 +176,19 @@ public class ClientControllerIntegrationTests {
                 .build();
     }
 
-    private ClientRequestUpdateDTO prepareClientRequestUpdateDTO() {
-        return ClientRequestUpdateDTO.builder()
+    private UpdateClientRequestDTO prepareUpdateClientRequestDTO() {
+        return UpdateClientRequestDTO.builder()
                 .name("NameUpdated")
                 .lastName("LastNameUpdated")
-                .clientType(ClientType.PERSON)
+                .clientType(ClientTypeDTO.PERSON)
                 .phoneNumber("123456789")
                 .birthDate(LocalDate.parse("1990-04-04"))
                 .email("updatedEmail@gmail.com")
                 .build();
     }
 
-    private AddressRequestDTO prepareUpdatedAddressDTO() {
-        return AddressRequestDTO.builder()
+    private UpdateAddressRequestDTO prepareUpdatedAddressDTO() {
+        return UpdateAddressRequestDTO.builder()
                 .city("CityUpdated")
                 .street("StreetUpdated")
                 .country("CountryUpdated")
@@ -193,5 +196,5 @@ public class ClientControllerIntegrationTests {
                 .apartmentNumber("Updated")
                 .build();
     }
-
 }
+

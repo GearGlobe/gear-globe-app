@@ -1,5 +1,16 @@
 --liquibase formatted sql
+
 --changeset cookie9161:1
+CREATE TABLE IF NOT EXISTS address (
+id BIGSERIAL PRIMARY KEY,
+city VARCHAR(255) NOT NULL,
+street VARCHAR(255) NOT NULL,
+house_number VARCHAR(255) NOT NULL,
+apartment_number VARCHAR(255),
+country VARCHAR(255) NOT NULL
+);
+
+--changeset cookie9161:2
 CREATE TABLE IF NOT EXISTS client (
 id BIGSERIAL PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
@@ -12,19 +23,9 @@ password VARCHAR(255) NOT NULL,
 role VARCHAR(255) NOT NULL,
 created_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 modified_date TIMESTAMP WITHOUT TIME ZONE,
-status VARCHAR(255) NOT NULL
-);
-
---changeset cookie9161:2
-CREATE TABLE IF NOT EXISTS address (
-id BIGSERIAL PRIMARY KEY,
-city VARCHAR(255) NOT NULL,
-street VARCHAR(255) NOT NULL,
-house_number VARCHAR(255) NOT NULL,
-apartment_number VARCHAR(255),
-country VARCHAR(255) NOT NULL,
-client_id BIGINT,
-FOREIGN KEY (client_id) REFERENCES client(id)
+status VARCHAR(255) NOT NULL,
+address_id BIGINT,
+FOREIGN KEY (address_id) REFERENCES address(id)
 );
 
 --changeset cookie9161:3

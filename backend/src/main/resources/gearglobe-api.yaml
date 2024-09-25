@@ -6,8 +6,11 @@ info:
 tags:
   - name: Offer
     description: Offer API
+  - name: Client
+    description: Client API
 servers:
   - url: http://localhost:8080
+
 
 paths:
   /api/offers:
@@ -137,7 +140,209 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
+  /api/clients:
+    get:
+      tags:
+        - Client
+      summary: Get all clients
+      operationId: getAllClients
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientResponse'
+    post:
+      tags:
+        - Client
+      summary: Create client
+      operationId: createClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/clients/{id}:
+    get:
+      tags:
+        - Client
+      summary: Get client by ID
+      operationId: getClientById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Client
+      summary: Update client by ID
+      operationId: updateClientById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Client
+      summary: Deactivate client by ID
+      operationId: deactivateClientById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientIdResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/clients/{id}/address:
+    put:
+      tags:
+        - Client
+      summary: Update client's address by ID
+      operationId: updateClientAddress
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAddressRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/clients/{id}/password:
+    patch:
+      tags:
+        - Client
+      summary: Change client's password by ID
+      operationId: changeClientPassword
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePasswordRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientIdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     OfferResponse:
@@ -226,6 +431,169 @@ components:
         price:
           type: number
           format: double
+    ClientResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        lastName:
+          type: string
+        clientType:
+          $ref: '#/components/schemas/ClientType'
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressResponse'
+        clientRole:
+          $ref: '#/components/schemas/ClientRole'
+        clientStatus:
+          $ref: '#/components/schemas/ClientStatus'
+    ClientIdResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+    CreateClientRequest:
+      type: object
+      required:
+        - name
+        - clientType
+        - email
+        - phoneNumber
+        - address
+        - password
+      properties:
+        name:
+          type: string
+          pattern: '^[a-zA-Z\p{L}]+([ .-][.a-zA-Z\p{L}]+)*$'
+        lastName:
+          type: string
+          pattern: '^[a-zA-Z\p{L}]+([ -][a-zA-Z\p{L}]+)*$'
+        clientType:
+          $ref: '#/components/schemas/ClientType'
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        phoneNumber:
+          type: string
+          pattern: '^\d{9}$'
+        address:
+          $ref: '#/components/schemas/CreateAddressRequest'
+        password:
+          type: string
+    UpdateClientRequest:
+      type: object
+      required:
+        - name
+        - clientType
+        - email
+        - phoneNumber
+      properties:
+        name:
+          type: string
+          pattern: '^[a-zA-Z\p{L}]+([ .-][.a-zA-Z\p{L}]+)*$'
+        lastName:
+          type: string
+          pattern: '^[a-zA-Z\p{L}]+([ -][a-zA-Z\p{L}]+)*$'
+        clientType:
+          $ref: '#/components/schemas/ClientType'
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+        phoneNumber:
+          type: string
+    AddressResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        city:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+        apartmentNumber:
+          type: string
+        country:
+          type: string
+    CreateAddressRequest:
+      type: object
+      required:
+        - city
+        - street
+        - houseNumber
+        - country
+      properties:
+        city:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+        apartmentNumber:
+          type: string
+        country:
+          type: string
+    UpdateAddressRequest:
+      type: object
+      required:
+        - city
+        - street
+        - houseNumber
+        - country
+      properties:
+        city:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+        apartmentNumber:
+          type: string
+        country:
+          type: string
+    UpdatePasswordRequest:
+      type: object
+      required:
+        - oldPassword
+        - newPassword
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+    ClientStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+    ClientType:
+      type: string
+      enum:
+        - PERSON
+        - COMPANY
+    ClientRole:
+      type: string
+      enum:
+        - CLIENT
+        - ADMIN
     ErrorResponse:
       type: object
       properties:

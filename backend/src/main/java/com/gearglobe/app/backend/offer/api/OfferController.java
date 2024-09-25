@@ -16,7 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 class OfferController implements OfferApi {
     public static final String OFFER_URL = "/api/offers";
-    public final OfferFacade offerFacade;
+
+    private final OfferFacade offerFacade;
 
     @Override
     public ResponseEntity<List<OfferResponseDTO>> getAllOffers() {

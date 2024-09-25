@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class OfferFacadeImpl implements OfferFacade{
+class OfferFacadeImpl implements OfferFacade{
     private final OfferService offerService;
 
     @Override

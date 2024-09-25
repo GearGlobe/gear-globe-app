@@ -1,16 +1,15 @@
 package com.gearglobe.app.backend.client.domain;
 
-import com.gearglobe.app.backend.client.api.dtos.*;
-import jakarta.persistence.EntityNotFoundException;
+import com.gearglobe.dto.*;
 
 import java.util.List;
 
 public interface ClientFacade {
     List<ClientResponseDTO> getAllClients();
     ClientResponseDTO getClientById(Long id);
-    ClientResponseDTO createClient(ClientRequestDTO clientDTO);
-    ClientResponseDTO updateClient(Long id, ClientRequestUpdateDTO clientDTO) throws EntityNotFoundException;
-    AddressResponseDTO updateClientAddress(Long id, AddressRequestDTO addressRequestDTO) throws EntityNotFoundException;
-    Long changeClientPassword(Long id, String oldPasswordToCheck, String password) throws EntityNotFoundException;
-    Long deactivateClient(Long id) throws EntityNotFoundException;
+    ClientResponseDTO createClient(CreateClientRequestDTO clientDTO);
+    ClientResponseDTO updateClient(Long id, UpdateClientRequestDTO clientDTO);
+    AddressResponseDTO updateClientAddress(Long id, UpdateAddressRequestDTO addressRequestDTO);
+    ClientIdResponseDTO changeClientPassword(Long id, String oldPasswordToCheck, String password);
+    ClientIdResponseDTO deactivateClient(Long id);
 }
