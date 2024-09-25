@@ -14,20 +14,10 @@ interface AddressMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "client", ignore = true)
-    @Mapping(target = "country", source = "country")
-    @Mapping(target = "city", source = "city")
-    @Mapping(target = "street", source = "street")
-    @Mapping(target = "houseNumber", source = "houseNumber")
-    @Mapping(target = "apartmentNumber", source = "apartmentNumber")
     Address map(CreateAddressRequestDTO createAddressRequestDTO);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "client", ignore = true)
-    @Mapping(target = "country", source = "country")
-    @Mapping(target = "city", source = "city")
-    @Mapping(target = "street", source = "street")
-    @Mapping(target = "houseNumber", source = "houseNumber")
-    @Mapping(target = "apartmentNumber", source = "apartmentNumber")
     Address map(UpdateAddressRequestDTO updateAddressRequestDTO);
 
     AddressResponseDTO map(Address address);
