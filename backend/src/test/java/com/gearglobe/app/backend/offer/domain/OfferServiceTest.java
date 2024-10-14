@@ -6,26 +6,29 @@ import static org.mockito.Mockito.*;
 
 import com.gearglobe.app.backend.configuration.exception.OfferNotFoundException;
 import com.gearglobe.dto.*;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class OfferServiceTest {
     @Mock
     private OfferRepository offerRepository;
     @InjectMocks
     private OfferServiceImpl offerService;
 
+    @BeforeEach
+    public void setup(){
+        offerRepository.saveAll(prepareOffers());
+    }
 
     @Test
     void getAllOffers_ShouldReturnListOfOfferDTOs() {
@@ -165,7 +168,6 @@ class OfferServiceTest {
 
     private static List<Offer> prepareOffers() {
         return List.of(
-
                 new Offer(1L, "Mark1", 2010L, 100000L, 2.0, "Description1", 10000.0, LocalDateTime.now(), LocalDateTime.now(), OfferStatusDTO.ACTIVE, 1L),
                 new Offer(2L, "Mark2", 2011L, 100001L, 2.1, "Description2", 10001.0, LocalDateTime.now(), LocalDateTime.now(), OfferStatusDTO.ACTIVE, 2L),
                 new Offer(3L, "Mark3", 2012L, 100002L, 2.2, "Description3", 10002.0, LocalDateTime.now(), LocalDateTime.now(), OfferStatusDTO.ACTIVE, 3L)
