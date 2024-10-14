@@ -7,11 +7,14 @@ import static org.mockito.Mockito.*;
 import com.gearglobe.app.backend.configuration.exception.ClientNotFoundException;
 import com.gearglobe.app.backend.configuration.exception.IncorrectClientTypeDataException;
 import com.gearglobe.dto.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
@@ -19,21 +22,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ClientServiceTest {
-
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class ClientServiceTest {
     @Mock
     private ClientRepository clientRepository;
-
     @Mock
     private AddressRepository addressRepository;
-
     @InjectMocks
     private ClientServiceImpl clientService;
-
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    public void setup() {
+        clientRepository.saveAll(prepareClients());
+        addressRepository.saveAll(prepareAddress());
+    }
 
     @Test
     void getAllClients_ShouldReturnListOfClientResponseDTOs() {
