@@ -10,15 +10,10 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Update and Deploy Application
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository (GitHub Actions)
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
-
-      - name: Connecting to server to update repository and deploy
+      - name: Update Repository and Restart Docker Containers
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.HOST }}
