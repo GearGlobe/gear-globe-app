@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/gearglobe_database
+    url: jdbc:postgresql://localhost:5432/gearglobe_db
     username: gearglobe
     password: password
     driver-class-name: org.postgresql.Driver
