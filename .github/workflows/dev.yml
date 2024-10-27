@@ -1,0 +1,29 @@
+name: Deploy to dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+
+jobs:
+  build:
+    name: Update and Deploy Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Repository and Restart Docker Containers
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/gearglobe/gear-globe-app
+            git fetch origin
+            git checkout ${{ github.event.inputs.branch }}
+            git pull origin ${{ github.event.inputs.branch }}
+            docker-compose down
+            docker-compose up -d --build
