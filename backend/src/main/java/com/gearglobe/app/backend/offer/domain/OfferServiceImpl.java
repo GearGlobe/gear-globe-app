@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,27 @@ class OfferServiceImpl implements OfferService {
             offerRepository.save(offer);
         }
         return OfferIdResponseDTO.builder().id(id).build();
+    }
+
+    @Override
+    public List<OfferIdResponseDTO> archiveOffersByClientId(Long clientId) {
+        List<Offer> offers = offerRepository.findOfferByClientId(clientId)
+                .stream()
+                .filter(Offer::isActiveOffer)
+                .toList();
+
+        if (offers.isEmpty()) {
+            return List.of();
+        }
+
+        offers.forEach(Offer::archiveOffer);
+        offerRepository.saveAll(offers);
+
+        return offers.stream()
+                .map(offer -> OfferIdResponseDTO.builder()
+                        .id(offer.getId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private Offer findOfferById(Long id) {

@@ -1,5 +1,6 @@
 package com.gearglobe.app.backend.client.domain;
 
+import com.gearglobe.app.backend.offer.domain.OfferFacade;
 import com.gearglobe.dto.*;
 import com.gearglobe.app.backend.configuration.exception.AddressNotFoundException;
 import com.gearglobe.app.backend.configuration.exception.ClientNotFoundException;
@@ -16,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 class ClientServiceImpl implements ClientService {
+    private final OfferFacade offerFacade;
     private final ClientRepository clientRepository;
     private final AddressRepository addressRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -86,6 +88,7 @@ class ClientServiceImpl implements ClientService {
         if (client.isActive()){
             client.deactivateClient();
             clientRepository.save(client);
+            offerFacade.archiveOffersByClientId(client.getId());
         }
 
         return ClientIdResponseDTO.builder().id(id).build();

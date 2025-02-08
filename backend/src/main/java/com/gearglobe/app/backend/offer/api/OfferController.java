@@ -30,6 +30,11 @@ class OfferController implements OfferApi {
     }
 
     @Override
+    public ResponseEntity<List<OfferIdResponseDTO>> archiveOffersByClientId(Long clientId) {
+        return ResponseEntity.ok(offerFacade.archiveOffersByClientId(clientId));
+    }
+
+    @Override
     public ResponseEntity<OfferResponseDTO> createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
         return ResponseEntity.ok(offerFacade.createOffer(createOfferRequestDTO));
     }
@@ -43,4 +48,5 @@ class OfferController implements OfferApi {
     public ResponseEntity<OfferIdResponseDTO> archiveOfferById(Long id) {
         return ResponseEntity.ok(offerFacade.archiveOffer(id));
     }
+
 }
