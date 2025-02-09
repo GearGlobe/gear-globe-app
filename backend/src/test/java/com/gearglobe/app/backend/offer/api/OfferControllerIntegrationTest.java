@@ -116,4 +116,6 @@ class OfferControllerIntegrationTest {
                 () -> assertEquals(1, offer.getId())
         );
     }
+
+    //TODO add test for archiving all client offers
 }

@@ -144,6 +144,7 @@ public class ClientControllerIntegrationTests {
         );
     }
 
+    //TODO check if this test needs to be changed after adding archiving all client offers
     @Test
     @Transactional
     void shouldDeactivateClient() throws Exception {

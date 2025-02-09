@@ -299,6 +299,7 @@ public class ClientServiceTest {
         );
     }
 
+    //TODO check if this test needs to be changed after adding archiving all client offers
     @Test
     void deactivateClient_ShouldReturnClientIdResponseDTO() {
         // GIVEN
