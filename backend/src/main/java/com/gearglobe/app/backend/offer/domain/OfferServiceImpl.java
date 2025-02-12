@@ -67,10 +67,8 @@ class OfferServiceImpl implements OfferService {
         offerRepository.saveAll(offers);
 
         return offers.stream()
-                .map(offer -> OfferIdResponseDTO.builder()
-                        .id(offer.getId())
-                        .build())
-                .collect(Collectors.toList());
+                .map(OfferMapper.INSTANCE::mapToOfferIdResponseDTO)
+                .toList();
     }
 
     private Offer findOfferById(Long id) {
