@@ -24,6 +24,11 @@ class OfferFacadeImpl implements OfferFacade{
     }
 
     @Override
+    public List<OfferIdResponseDTO> archiveOffersByClientId(Long clientId) {
+        return offerService.archiveOffersByClientId(clientId);
+    }
+
+    @Override
     public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
         return offerService.createOffer(createOfferRequestDTO);
     }

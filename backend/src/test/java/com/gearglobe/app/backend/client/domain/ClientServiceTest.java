@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import com.gearglobe.app.backend.configuration.exception.ClientNotFoundException;
 import com.gearglobe.app.backend.configuration.exception.IncorrectClientTypeDataException;
+import com.gearglobe.app.backend.offer.domain.OfferFacade;
 import com.gearglobe.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,8 @@ public class ClientServiceTest {
     private ClientRepository clientRepository;
     @Mock
     private AddressRepository addressRepository;
+    @Mock
+    private OfferFacade offerFacade;
     @InjectMocks
     private ClientServiceImpl clientService;
     @Mock
@@ -311,7 +315,7 @@ public class ClientServiceTest {
             client.deactivateClient();
             return client;
         });
-
+        when(offerFacade.archiveOffersByClientId(client.getId())).thenReturn(Collections.emptyList());
         ClientIdResponseDTO result = clientService.deactivateClient(existingId);
 
         // THEN

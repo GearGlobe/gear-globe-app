@@ -140,6 +140,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/offers/{clientId}/archiveAll:
+    delete:
+      tags:
+        - Offer
+      summary: Archive all active client offers
+      operationId: archiveOffersByClientId
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+               schema:
+                 type: array
+                 items:
+                   $ref: '#/components/schemas/OfferIdResponse'
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/clients:
     get:
       tags:

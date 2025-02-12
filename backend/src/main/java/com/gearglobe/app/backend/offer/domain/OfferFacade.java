@@ -9,6 +9,7 @@ import java.util.List;
 public interface OfferFacade {
     List<OfferResponseDTO> getAllOffers();
     OfferResponseDTO getOfferById(Long id);
+    List<OfferIdResponseDTO> archiveOffersByClientId(Long clientId);
     OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO);
     OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO);
     OfferIdResponseDTO archiveOffer(Long id);
