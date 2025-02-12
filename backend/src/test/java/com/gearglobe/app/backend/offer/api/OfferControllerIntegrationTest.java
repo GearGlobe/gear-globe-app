@@ -2,8 +2,7 @@ package com.gearglobe.app.backend.offer.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gearglobe.dto.OfferResponseDTO;
-import com.gearglobe.dto.OfferStatusDTO;
+import com.gearglobe.dto.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,7 +35,7 @@ class OfferControllerIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
         List<OfferResponseDTO> offers = objectMapper.readValue(response, new TypeReference<>() {});
 
-        assertEquals(3, offers.size());
+        assertEquals(4, offers.size());
     }
 
     @Test
@@ -52,16 +51,7 @@ class OfferControllerIntegrationTest {
     @Test
     @Transactional
     void shouldCreateOffer() throws Exception {
-        OfferResponseDTO testeeOffer = OfferResponseDTO.builder()
-                .mark("Mark4")
-                .productionYear(2010L)
-                .millage(100000L)
-                .engineCapacity(2.0)
-                .description("Description4")
-                .price(10000.0)
-                .createDate(LocalDateTime.now())
-                .status(OfferStatusDTO.ACTIVE)
-                .build();
+        CreateOfferRequestDTO testeeOffer = prepareCreateOfferRequestDTO();
 
         String response = mockMvc.perform(post(OfferController.OFFER_URL)
                         .param("clientId", "1")
@@ -71,23 +61,13 @@ class OfferControllerIntegrationTest {
 
         OfferResponseDTO offer = objectMapper.readValue(response, OfferResponseDTO.class);
 
-        assertEquals(4, offer.getId());
+        assertEquals(5, offer.getId());
     }
 
     @Test
     @Transactional
     void shouldUpdateOffer() throws Exception {
-        OfferResponseDTO testeeOffer = OfferResponseDTO.builder()
-                .id(1L)
-                .mark("MarkUpdated")
-                .productionYear(2020L)
-                .millage(50000L)
-                .engineCapacity(2.0)
-                .description("Description1")
-                .price(20000.0)
-                .createDate(LocalDateTime.parse("2022-01-18T12:00:00"))
-                .status(OfferStatusDTO.ACTIVE)
-                .build();
+        UpdateOfferRequestDTO testeeOffer = prepareUpdateOfferRequestDTO();
 
         String response = mockMvc.perform(put(OfferController.OFFER_URL + "/1")
                         .contentType("application/json")
@@ -110,12 +90,47 @@ class OfferControllerIntegrationTest {
                         .contentType("application/json"))
                 .andReturn().getResponse().getContentAsString();
 
-        OfferResponseDTO offer = objectMapper.readValue(response, OfferResponseDTO.class);
+        OfferIdResponseDTO offer = objectMapper.readValue(response, OfferIdResponseDTO.class);
 
         assertAll("Should return archived offer values",
                 () -> assertEquals(1, offer.getId())
         );
     }
 
-    //TODO add test for archiving all client offers
+    @Test
+    void shouldArchiveClientOffers() throws Exception {
+        String response = mockMvc.perform(delete(OfferController.OFFER_URL + "/2/archiveAll")
+                        .contentType("application/json"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<OfferIdResponseDTO> offers = objectMapper.readValue(response, new TypeReference<>(){});
+
+        assertAll("Should return client's archived offer ids",
+                () -> assertEquals(2, offers.size())
+        );
+    }
+
+    private CreateOfferRequestDTO prepareCreateOfferRequestDTO() {
+        return CreateOfferRequestDTO.builder()
+                .mark("Mark4")
+                .productionYear(2010L)
+                .millage(100000L)
+                .engineCapacity(2.0)
+                .description("Description4")
+                .price(10000.0)
+                .build();
+    }
+
+    private UpdateOfferRequestDTO prepareUpdateOfferRequestDTO() {
+        return UpdateOfferRequestDTO.builder()
+                .mark("MarkUpdated")
+                .productionYear(2020L)
+                .millage(50000L)
+                .engineCapacity(2.0)
+                .description("Description1")
+                .price(20000.0)
+                .build();
+    }
 }

@@ -140,14 +140,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/clients/{id}/offers:
+  /api/offers/{clientId}/archiveAll:
     delete:
       tags:
         - Offer
       summary: Archive all active client offers
       operationId: archiveOffersByClientId
       parameters:
-        - name: id
+        - name: clientId
           in: path
           required: true
           schema:

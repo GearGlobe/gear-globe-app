@@ -149,7 +149,7 @@ class OfferServiceTest {
     }
 
     @Test
-    void archiveOffer_ShouldReturnArchivedOfferDTO() {
+    void archiveOffer_ShouldReturnArchivedOfferIdDTO() {
         // GIVEN
         final Long existingId = 1L;
         final Offer offer = prepareOffers().getFirst();
@@ -168,7 +168,7 @@ class OfferServiceTest {
     }
 
     @Test
-    void archiveOffersByClientId_ShouldReturnArchivedOffersDTO() {
+    void archiveOffersByClientId_ShouldReturnArchivedOfferIdsDTO() {
         // GIVEN
         final Long clientId = 2L;
         final List<Offer> clientOffers = prepareOffers().stream()

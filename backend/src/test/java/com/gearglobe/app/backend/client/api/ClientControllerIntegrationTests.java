@@ -35,12 +35,10 @@ public class ClientControllerIntegrationTests {
         String response = mockMvc.perform(get(ClientController.CLIENT_URL))
                 .andReturn().getResponse().getContentAsString();
 
-        List<ClientResponseDTO> clientsResponse = objectMapper.readValue(response, new TypeReference<>() {
-        });
+        List<ClientResponseDTO> clientsResponse = objectMapper.readValue(response, new TypeReference<>() {});
 
         assertEquals(3, clientsResponse.size());
     }
-
 
     @Test
     void shouldReturnClientById() throws Exception {
@@ -137,21 +135,22 @@ public class ClientControllerIntegrationTests {
                         .content(objectMapper.writeValueAsString(testeePassword)))
                 .andReturn().getResponse().getContentAsString();
 
-        ClientResponseDTO clientIdResponse = objectMapper.readValue(response, ClientResponseDTO.class);
+        ClientIdResponseDTO clientIdResponse = objectMapper.readValue(response, ClientIdResponseDTO.class);
 
         assertAll("Should return client id",
                 () -> assertEquals(1L, clientIdResponse.getId())
         );
     }
 
-    //TODO check if this test needs to be changed after adding archiving all client offers
     @Test
     @Transactional
     void shouldDeactivateClient() throws Exception {
         String response = mockMvc.perform(delete(ClientController.CLIENT_URL + "/1"))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        ClientResponseDTO clientId = objectMapper.readValue(response, ClientResponseDTO.class);
+        ClientIdResponseDTO clientId = objectMapper.readValue(response, ClientIdResponseDTO.class);
 
         assertAll("Should return client id",
                 () -> assertEquals(1L, clientId.getId())
@@ -198,4 +197,3 @@ public class ClientControllerIntegrationTests {
                 .build();
     }
 }
-
