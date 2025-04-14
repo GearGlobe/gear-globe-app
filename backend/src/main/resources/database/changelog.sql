@@ -42,3 +42,42 @@ modified_date TIMESTAMP WITHOUT TIME ZONE,
 status VARCHAR(255) NOT NULL,
 client_id BIGINT NOT NULL
 );
+
+--changeset cookie9161:4
+CREATE TABLE IF NOT EXISTS car_offer(
+id BIGSERIAL PRIMARY KEY,
+make VARCHAR(255) NOT NULL,
+model VARCHAR(255) NOT NULL,
+body VARCHAR(255) NOT NULL,
+version VARCHAR(255) NOT NULL,
+generation VARCHAR(255) NOT NULL,
+vin VARCHAR(255) NOT NULL,
+fuel VARCHAR(255) NOT NULL,
+power INT NOT NULL,
+gearbox VARCHAR(255) NOT NULL,
+inside_city_fuel_consumption DOUBLE PRECISION NOT NULL,
+outside_city_fuel_consumption DOUBLE PRECISION NOT NULL,
+door_count INT NOT NULL,
+color VARCHAR(255) NOT NULL,
+paint_finish VARCHAR(255),
+production_country VARCHAR(255),
+production_year BIGINT NOT NULL,
+registered_in_poland BOOLEAN NOT NULL,
+after_incident BOOLEAN NOT NULL,
+wear_stage VARCHAR(255) NOT NULL,
+millage BIGINT NOT NULL,
+engine_capacity DOUBLE PRECISION NOT NULL,
+modified_date TIMESTAMP WITHOUT TIME ZONE,
+offer_id BIGINT NOT NULL,
+FOREIGN KEY (offer_id) REFERENCES offer(id)
+);
+
+--changeset cookie9161:5
+ALTER TABLE IF EXISTS offer
+    DROP COLUMN mark,
+    DROP COLUMN production_year,
+    DROP COLUMN millage,
+    DROP COLUMN engine_capacity,
+    ADD COLUMN offer_type VARCHAR(255) NOT NULL DEFAULT 'CAR',
+    ADD COLUMN title VARCHAR(255) DEFAULT 'No title' NOT NULL,
+    ADD COLUMN negotiable BOOLEAN DEFAULT false NOT NULL;

@@ -1,7 +1,8 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.dto.CreateOfferRequestDTO;
+import com.gearglobe.dto.CreateBaseOfferRequestDTO;
 import com.gearglobe.dto.OfferStatusDTO;
+import com.gearglobe.dto.OfferTypeDTO;
 import com.gearglobe.dto.UpdateOfferRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,25 +26,23 @@ class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String mark;
-
-    @Column(nullable = false, name = "production_year")
-    private Long productionYear;
+    @Column(nullable = false, name = "offer_type")
+    @Enumerated(EnumType.STRING)
+    private OfferTypeDTO offerTypeDTO;
 
     @Column(nullable = false)
-    private Long millage;
-
-    @Column(nullable = false, name = "engine_capacity")
-    private Double engineCapacity;
+    private String title;
 
     private String description;
 
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false, name = "create_date")
+    @Column(nullable = false)
+    private Boolean negotiable;
+
     @CreatedDate
+    @Column(nullable = false, name = "create_date")
     private LocalDateTime createDate;
 
     @LastModifiedDate
@@ -57,24 +56,22 @@ class Offer {
     @Column(nullable = false, name = "client_id")
     private Long clientId;
 
-    public static Offer createOffer(CreateOfferRequestDTO createOfferRequestDTO, Long clientId) {
-        Offer offer = new Offer();
-        offer.mark = createOfferRequestDTO.getMark();
-        offer.productionYear = createOfferRequestDTO.getProductionYear();
-        offer.millage = createOfferRequestDTO.getMillage();
-        offer.engineCapacity = createOfferRequestDTO.getEngineCapacity();
-        offer.description = createOfferRequestDTO.getDescription();
-        offer.price = createOfferRequestDTO.getPrice();
-        offer.status = OfferStatusDTO.ACTIVE;
-        offer.clientId = clientId;
-        return offer;
+    @OneToOne(mappedBy = "offer")
+    private CarOffer carOffer;
+
+    public static Offer createOffer(CreateBaseOfferRequestDTO createBaseOfferRequestDTO, Long clientId) {
+        return Offer.builder()
+                .offerTypeDTO(createBaseOfferRequestDTO.getOfferType())
+                .title(createBaseOfferRequestDTO.getTitle())
+                .description(createBaseOfferRequestDTO.getDescription())
+                .price(createBaseOfferRequestDTO.getPrice())
+                .negotiable(createBaseOfferRequestDTO.getNegotiable())
+                .status(OfferStatusDTO.ACTIVE)
+                .clientId(clientId)
+                .build();
     }
 
     public void updateOffer(UpdateOfferRequestDTO updateOfferRequestDTO) {
-        this.mark = updateOfferRequestDTO.getMark();
-        this.productionYear= updateOfferRequestDTO.getProductionYear();
-        this.millage = updateOfferRequestDTO.getMillage();
-        this.engineCapacity = updateOfferRequestDTO.getEngineCapacity();
         this.description = updateOfferRequestDTO.getDescription();
         this.price = updateOfferRequestDTO.getPrice();
     }

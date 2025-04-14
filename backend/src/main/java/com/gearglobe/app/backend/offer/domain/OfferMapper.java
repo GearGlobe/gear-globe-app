@@ -1,5 +1,6 @@
 package com.gearglobe.app.backend.offer.domain;
 
+import com.gearglobe.dto.CarOfferResponseDTO;
 import com.gearglobe.dto.CreateOfferRequestDTO;
 import com.gearglobe.dto.OfferResponseDTO;
 import com.gearglobe.dto.UpdateOfferRequestDTO;
@@ -26,4 +27,12 @@ interface OfferMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "clientId", ignore = true)
     Offer map(UpdateOfferRequestDTO updateOfferRequestDTO);
+
+    @Mapping(target = "title", source = "offer.title")
+    @Mapping(target = "price", source = "offer.price")
+    @Mapping(target = "description", source = "offer.description")
+    @Mapping(target = "createDate", source = "offer.createDate")
+    @Mapping(target = "status", source = "offer.status")
+    @Mapping(target = "negotiable", source = "offer.negotiable")
+    CarOfferResponseDTO map(CarOffer carOffer);
 }

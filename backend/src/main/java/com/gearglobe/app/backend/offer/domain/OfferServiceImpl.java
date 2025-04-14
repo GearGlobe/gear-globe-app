@@ -7,48 +7,54 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+//TODO fix this
 @Service
 @RequiredArgsConstructor
 class OfferServiceImpl implements OfferService {
     private final OfferRepository offerRepository;
+    private final OfferCreator offerCreator;
+    private final OfferResponseCreator offerResponseCreator;
 
     @Override
-    public List<OfferResponseDTO> getAllOffers() {
-        return offerRepository.findAll()
+    public List<CarOfferResponseDTO> getAllCarOffers() {
+        return offerCreator.getAllCarOffers()
                 .stream()
                 .map(OfferMapper.INSTANCE::map)
                 .toList();
     }
 
+    //TODO zastanowic sie czy faktycznie potrzebna jest ta metoda?
     @Override
     public OfferResponseDTO getOfferById(Long id) {
         Offer offer = findOfferById(id);
-        return OfferMapper.INSTANCE.map(offer);
+        return offerResponseCreator.createOfferResponseByType(offer.getOfferTypeDTO(), offer.getId());
     }
 
     @Override
-    public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
+    public OfferIdResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
         Long clientId = 666L; //TODO: Add the ID of the logged-in client
-        Offer offer = offerRepository.save(Offer.createOffer(createOfferRequestDTO, clientId));
-        return OfferMapper.INSTANCE.map(offer);
+        Offer offer = offerCreator.createOffer(createOfferRequestDTO, clientId);
+        return OfferIdResponseDTO.builder().id(offer.getId()).build();
     }
 
     @Override
     public OfferResponseDTO updateOffer(Long id, UpdateOfferRequestDTO updateOfferRequestDTO) {
-        Offer offer = findOfferById(id);
-        offer.updateOffer(updateOfferRequestDTO);
-        offerRepository.save(offer);
-        return OfferMapper.INSTANCE.map(offer);
+//        Offer offer = findOfferById(id);
+//        offer.updateOffer(updateOfferRequestDTO);
+//        offerRepository.save(offer);
+//        return OfferMapper.INSTANCE.map(offer);
+        return null;
     }
 
     @Override
     public OfferIdResponseDTO archiveOffer(Long id) {
-        Offer offer = findOfferById(id);
-        if (offer.isActiveOffer()) {
-            offer.archiveOffer();
-            offerRepository.save(offer);
-        }
-        return OfferIdResponseDTO.builder().id(id).build();
+//        Offer offer = findOfferById(id);
+//        if (offer.isActiveOffer()) {
+//            offer.archiveOffer();
+//            offerRepository.save(offer);
+//        }
+//        return OfferIdResponseDTO.builder().id(id).build();
+        return null;
     }
 
     private Offer findOfferById(Long id) {
