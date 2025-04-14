@@ -1,9 +1,6 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.dto.CreateOfferRequestDTO;
-import com.gearglobe.dto.OfferIdResponseDTO;
-import com.gearglobe.dto.OfferResponseDTO;
-import com.gearglobe.dto.UpdateOfferRequestDTO;
+import com.gearglobe.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -14,8 +11,8 @@ class OfferFacadeImpl implements OfferFacade{
     private final OfferService offerService;
 
     @Override
-    public List<OfferResponseDTO> getAllOffers() {
-        return offerService.getAllOffers();
+    public List<CarOfferResponseDTO> getAllCarOffers() {
+        return offerService.getAllCarOffers();
     }
 
     @Override
@@ -24,7 +21,7 @@ class OfferFacadeImpl implements OfferFacade{
     }
 
     @Override
-    public OfferResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
+    public OfferIdResponseDTO createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
         return offerService.createOffer(createOfferRequestDTO);
     }
 

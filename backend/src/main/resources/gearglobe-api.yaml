@@ -13,12 +13,12 @@ servers:
 
 
 paths:
-  /api/offers:
+  /api/offers/cars:
     get:
       tags:
         - Offer
-      summary: Get all offers
-      operationId: getAllOffers
+      summary: Get all car offers
+      operationId: getAllCarOffers
       responses:
         '200':
           description: OK
@@ -27,7 +27,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfferResponse'
+                    $ref: '#/components/schemas/CarOfferResponse'
+  /api/offers:
     post:
       tags:
         - Offer
@@ -45,7 +46,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfferResponse'
+                $ref: '#/components/schemas/OfferIdResponse'
         '400':
           description: Bad Request
           content:
@@ -348,38 +349,87 @@ components:
     OfferResponse:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-        mark:
+        offerType:
+          $ref: '#/components/schemas/OfferType'
+        title:
           type: string
-        productionYear:
-          type: integer
-          format: int64
-        millage:
-          type: integer
-          format: int64
-        engineCapacity:
-          type: number
-          format: double
         description:
           type: string
         price:
           type: number
           format: double
+        negotiable:
+          type: boolean
         createDate:
-          type: string
-          format: date-time
-        modifiedDate:
           type: string
           format: date-time
         status:
           $ref: '#/components/schemas/OfferStatus'
-    OfferStatus:
-      type: string
-      enum:
-        - ACTIVE
-        - ARCHIVE
+      discriminator:
+        propertyName: offerType
+        mapping:
+          CAR: '#/components/schemas/CarOfferResponse'
+          BIKE: '#/components/schemas/BikeOfferResponse'
+    CarOfferResponse:
+      allOf:
+        - $ref: '#/components/schemas/OfferResponse'
+        - type: object
+          properties:
+            make:
+              type: string
+            model:
+              type: string
+            body:
+              $ref: '#/components/schemas/CarBodyType'
+            version:
+              type: string
+            generation:
+              type: string
+            vin:
+              type: string
+            fuel:
+              $ref: '#/components/schemas/FuelType'
+            power:
+              type: integer
+            gearbox:
+              $ref: '#/components/schemas/GearBox'
+            insideCityFuelConsumption:
+              type: number
+              format: double
+            outsideCityFuelConsumption:
+              type: number
+              format: double
+            doorCount:
+              type: integer
+            color:
+              type: string
+            paintFinish:
+              type: string
+            productionCountry:
+              type: string
+            productionYear:
+              type: integer
+              format: int64
+            isRegisteredInPoland:
+              type: boolean
+            isAfterIncident:
+              type: boolean
+            wearStage:
+              $ref: '#/components/schemas/WearStage'
+            millage:
+              type: integer
+              format: int64
+            engineCapacity:
+              type: number
+              format: double
+    BikeOfferResponse:
+      allOf:
+        - $ref: '#/components/schemas/OfferResponse'
+        - type: object
+          properties:
+            bike:
+              type: integer
+              format: int64
     OfferIdResponse:
       type: object
       properties:
@@ -389,27 +439,100 @@ components:
     CreateOfferRequest:
       type: object
       required:
-        - mark
-        - productionYear
-        - millage
-        - engineCapacity
+        - createBaseOfferRequest
+      properties:
+        createBaseOfferRequest:
+          $ref: '#/components/schemas/CreateBaseOfferRequest'
+        createCarOfferRequest:
+          $ref: '#/components/schemas/CreateCarOfferRequest'
+    CreateBaseOfferRequest:
+      type: object
+      required:
+        - offerType
+        - title
         - description
         - price
+        - negotiable
       properties:
-        mark:
+        offerType:
+          $ref: '#/components/schemas/OfferType'
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+        negotiable:
+          type: boolean
+    CreateCarOfferRequest:
+      type: object
+      required:
+        - make
+        - model
+        - body
+        - version
+        - generation
+        - vin
+        - fuel
+        - power
+        - gearbox
+        - insideCityFuelConsumption
+        - outsideCityFuelConsumption
+        - doorCount
+        - color
+        - productionYear
+        - isRegisteredInPoland
+        - isAfterIncident
+        - wearStage
+        - millage
+        - engineCapacity
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        body:
+          $ref: '#/components/schemas/CarBodyType'
+        version:
+          type: string
+        generation:
+          type: string
+        vin:
+          type: string
+        fuel:
+          $ref: '#/components/schemas/FuelType'
+        power:
+          type: integer
+        gearbox:
+          $ref: '#/components/schemas/GearBox'
+        insideCityFuelConsumption:
+          type: number
+          format: double
+        outsideCityFuelConsumption:
+          type: number
+          format: double
+        doorCount:
+          type: integer
+        color:
+          type: string
+        paintFinish:
+          type: string
+        productionCountry:
           type: string
         productionYear:
           type: integer
           format: int64
+        isRegisteredInPoland:
+          type: boolean
+        isAfterIncident:
+          type: boolean
+        wearStage:
+          $ref: '#/components/schemas/WearStage'
         millage:
           type: integer
           format: int64
         engineCapacity:
-          type: number
-          format: double
-        description:
-          type: string
-        price:
           type: number
           format: double
     UpdateOfferRequest:
@@ -578,6 +701,46 @@ components:
           type: string
         newPassword:
           type: string
+    OfferType:
+      type: string
+      enum:
+        - CAR
+        - BIKE
+    OfferStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - ARCHIVE
+    CarBodyType:
+      type: string
+      enum:
+        - SEDAN
+        - COUPE
+        - HATCHBACK
+        - SUV
+        - CROSSOVER
+        - WAGON
+        - PICKUP_TRUCK
+        - VAN
+    FuelType:
+      type: string
+      enum:
+        - GASOLINE
+        - GASOLINE_LPG
+        - DIESEL
+        - ELECTRIC
+        - HYBRID
+    GearBox:
+      type: string
+      enum:
+        - MANUAL
+        - AUTOMATIC
+    WearStage:
+      type: string
+      enum:
+        - NEW
+        - USED
+        - BROKEN
     ClientStatus:
       type: string
       enum:

@@ -2,10 +2,8 @@ package com.gearglobe.app.backend.offer.api;
 
 import com.gearglobe.api.OfferApi;
 import com.gearglobe.app.backend.offer.domain.OfferFacade;
-import com.gearglobe.dto.CreateOfferRequestDTO;
-import com.gearglobe.dto.OfferIdResponseDTO;
+import com.gearglobe.dto.*;
 import com.gearglobe.dto.OfferResponseDTO;
-import com.gearglobe.dto.UpdateOfferRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +18,8 @@ class OfferController implements OfferApi {
     private final OfferFacade offerFacade;
 
     @Override
-    public ResponseEntity<List<OfferResponseDTO>> getAllOffers() {
-        return ResponseEntity.ok(offerFacade.getAllOffers());
+    public ResponseEntity<List<CarOfferResponseDTO>> getAllCarOffers() {
+        return ResponseEntity.ok(offerFacade.getAllCarOffers());
     }
 
     @Override
@@ -30,7 +28,7 @@ class OfferController implements OfferApi {
     }
 
     @Override
-    public ResponseEntity<OfferResponseDTO> createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
+    public ResponseEntity<OfferIdResponseDTO> createOffer(CreateOfferRequestDTO createOfferRequestDTO) {
         return ResponseEntity.ok(offerFacade.createOffer(createOfferRequestDTO));
     }
 
