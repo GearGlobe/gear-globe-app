@@ -68,8 +68,7 @@ wear_stage VARCHAR(255) NOT NULL,
 millage BIGINT NOT NULL,
 engine_capacity DOUBLE PRECISION NOT NULL,
 modified_date TIMESTAMP WITHOUT TIME ZONE,
-offer_id BIGINT NOT NULL,
-FOREIGN KEY (offer_id) REFERENCES offer(id)
+FOREIGN KEY (id) REFERENCES offer(id)
 );
 
 --changeset cookie9161:5

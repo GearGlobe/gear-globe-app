@@ -27,7 +27,7 @@ class OfferServiceImpl implements OfferService {
     @Override
     public OfferResponseDTO getOfferById(Long id) {
         Offer offer = findOfferById(id);
-        return offerResponseCreator.createOfferResponseByType(offer.getOfferTypeDTO(), offer.getId());
+        return offerResponseCreator.createOfferResponse(offer);
     }
 
     @Override
