@@ -1,14 +1,11 @@
 package com.gearglobe.app.backend.offer.domain;
 
-import com.gearglobe.dto.CreateBaseOfferRequestDTO;
-import com.gearglobe.dto.OfferStatusDTO;
-import com.gearglobe.dto.OfferTypeDTO;
-import com.gearglobe.dto.UpdateOfferRequestDTO;
+import com.gearglobe.dto.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,12 +13,13 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "offer")
-class Offer {
+abstract class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,21 +53,6 @@ class Offer {
 
     @Column(nullable = false, name = "client_id")
     private Long clientId;
-
-    @OneToOne(mappedBy = "offer")
-    private CarOffer carOffer;
-
-    public static Offer createOffer(CreateBaseOfferRequestDTO createBaseOfferRequestDTO, Long clientId) {
-        return Offer.builder()
-                .offerTypeDTO(createBaseOfferRequestDTO.getOfferType())
-                .title(createBaseOfferRequestDTO.getTitle())
-                .description(createBaseOfferRequestDTO.getDescription())
-                .price(createBaseOfferRequestDTO.getPrice())
-                .negotiable(createBaseOfferRequestDTO.getNegotiable())
-                .status(OfferStatusDTO.ACTIVE)
-                .clientId(clientId)
-                .build();
-    }
 
     public void updateOffer(UpdateOfferRequestDTO updateOfferRequestDTO) {
         this.description = updateOfferRequestDTO.getDescription();

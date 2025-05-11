@@ -348,6 +348,11 @@ components:
   schemas:
     OfferResponse:
       type: object
+      discriminator:
+        propertyName: offerType
+        mapping:
+          CAR: '#/components/schemas/CarOfferResponse'
+          BIKE: '#/components/schemas/BikeOfferResponse'
       properties:
         offerType:
           $ref: '#/components/schemas/OfferType'
@@ -365,11 +370,6 @@ components:
           format: date-time
         status:
           $ref: '#/components/schemas/OfferStatus'
-      discriminator:
-        propertyName: offerType
-        mapping:
-          CAR: '#/components/schemas/CarOfferResponse'
-          BIKE: '#/components/schemas/BikeOfferResponse'
     CarOfferResponse:
       allOf:
         - $ref: '#/components/schemas/OfferResponse'
@@ -439,20 +439,16 @@ components:
     CreateOfferRequest:
       type: object
       required:
-        - createBaseOfferRequest
-      properties:
-        createBaseOfferRequest:
-          $ref: '#/components/schemas/CreateBaseOfferRequest'
-        createCarOfferRequest:
-          $ref: '#/components/schemas/CreateCarOfferRequest'
-    CreateBaseOfferRequest:
-      type: object
-      required:
         - offerType
         - title
         - description
         - price
         - negotiable
+      discriminator:
+        propertyName: offerType
+        mapping:
+          CAR: '#/components/schemas/CreateCarOfferRequest'
+          BIKE: '#/components/schemas/CreateBikeOfferRequest'
       properties:
         offerType:
           $ref: '#/components/schemas/OfferType'
@@ -466,75 +462,84 @@ components:
         negotiable:
           type: boolean
     CreateCarOfferRequest:
-      type: object
-      required:
-        - make
-        - model
-        - body
-        - version
-        - generation
-        - vin
-        - fuel
-        - power
-        - gearbox
-        - insideCityFuelConsumption
-        - outsideCityFuelConsumption
-        - doorCount
-        - color
-        - productionYear
-        - isRegisteredInPoland
-        - isAfterIncident
-        - wearStage
-        - millage
-        - engineCapacity
-      properties:
-        make:
-          type: string
-        model:
-          type: string
-        body:
-          $ref: '#/components/schemas/CarBodyType'
-        version:
-          type: string
-        generation:
-          type: string
-        vin:
-          type: string
-        fuel:
-          $ref: '#/components/schemas/FuelType'
-        power:
-          type: integer
-        gearbox:
-          $ref: '#/components/schemas/GearBox'
-        insideCityFuelConsumption:
-          type: number
-          format: double
-        outsideCityFuelConsumption:
-          type: number
-          format: double
-        doorCount:
-          type: integer
-        color:
-          type: string
-        paintFinish:
-          type: string
-        productionCountry:
-          type: string
-        productionYear:
-          type: integer
-          format: int64
-        isRegisteredInPoland:
-          type: boolean
-        isAfterIncident:
-          type: boolean
-        wearStage:
-          $ref: '#/components/schemas/WearStage'
-        millage:
-          type: integer
-          format: int64
-        engineCapacity:
-          type: number
-          format: double
+      allOf:
+        - $ref: '#/components/schemas/CreateOfferRequest'
+        - type: object
+          required:
+            - make
+            - model
+            - body
+            - version
+            - generation
+            - vin
+            - fuel
+            - power
+            - gearbox
+            - insideCityFuelConsumption
+            - outsideCityFuelConsumption
+            - doorCount
+            - color
+            - productionYear
+            - isRegisteredInPoland
+            - isAfterIncident
+            - wearStage
+            - millage
+            - engineCapacity
+          properties:
+            make:
+              type: string
+            model:
+              type: string
+            body:
+              $ref: '#/components/schemas/CarBodyType'
+            version:
+              type: string
+            generation:
+              type: string
+            vin:
+              type: string
+            fuel:
+              $ref: '#/components/schemas/FuelType'
+            power:
+              type: integer
+            gearbox:
+              $ref: '#/components/schemas/GearBox'
+            insideCityFuelConsumption:
+              type: number
+              format: double
+            outsideCityFuelConsumption:
+              type: number
+              format: double
+            doorCount:
+              type: integer
+            color:
+              type: string
+            paintFinish:
+              type: string
+            productionCountry:
+              type: string
+            productionYear:
+              type: integer
+              format: int64
+            isRegisteredInPoland:
+              type: boolean
+            isAfterIncident:
+              type: boolean
+            wearStage:
+              $ref: '#/components/schemas/WearStage'
+            millage:
+              type: integer
+              format: int64
+            engineCapacity:
+              type: number
+              format: double
+    CreateBikeOfferRequest:
+      allOf:
+      - $ref: '#/components/schemas/CreateOfferRequest'
+      - type: object
+        properties:
+          test:
+            type: string
     UpdateOfferRequest:
       type: object
       properties:

@@ -3,9 +3,9 @@ package com.gearglobe.app.backend.offer.domain;
 import com.gearglobe.dto.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,15 +13,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "car_offer")
-class CarOffer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+class CarOffer extends Offer {
 
     @Column(nullable = false)
     private String make;
@@ -94,12 +91,15 @@ class CarOffer {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "offer_id", referencedColumnName = "id")
-    private Offer offer;
-
-    public static CarOffer createOffer(CreateCarOfferRequestDTO createCarOfferRequestDTO, CreateBaseOfferRequestDTO createBaseOfferRequestDTO, Long clientId) {
+    public static CarOffer createOffer(CreateCarOfferRequestDTO createCarOfferRequestDTO, Long clientId) {
         return CarOffer.builder()
+                .offerTypeDTO(createCarOfferRequestDTO.getOfferType())
+                .title(createCarOfferRequestDTO.getTitle())
+                .description(createCarOfferRequestDTO.getDescription())
+                .price(createCarOfferRequestDTO.getPrice())
+                .negotiable(createCarOfferRequestDTO.getNegotiable())
+                .status(OfferStatusDTO.ACTIVE)
+                .clientId(clientId)
                 .make(createCarOfferRequestDTO.getMake())
                 .model(createCarOfferRequestDTO.getModel())
                 .body(createCarOfferRequestDTO.getBody())
@@ -121,7 +121,6 @@ class CarOffer {
                 .wearStage(createCarOfferRequestDTO.getWearStage())
                 .millage(createCarOfferRequestDTO.getMillage())
                 .engineCapacity(createCarOfferRequestDTO.getEngineCapacity())
-                .offer(Offer.createOffer(createBaseOfferRequestDTO, clientId))
                 .build();
     }
 

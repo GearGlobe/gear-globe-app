@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 interface CarOfferRepository extends JpaRepository<CarOffer, Long> {
-    CarOffer findByOfferId(Long offerId);
+
 }
